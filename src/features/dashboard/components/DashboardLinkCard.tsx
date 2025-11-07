@@ -41,7 +41,7 @@ export const DashboardLinkCard: React.FC<DashboardLinkCardProps> = ({
             <Icon className="w-6 h-6 text-blue-800" />
           </div>
 
-          <h3 className="text-sm font-semibold text-primaryForm transition-colors duration-200 group-hover:text-primaryForeground mb-1">
+          <h3 className="text-sm text-primaryForm transition-colors duration-200 group-hover:text-primaryForeground mb-1">
             {title}
           </h3>
 

@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Eye,
   MessageSquare,
@@ -47,7 +46,7 @@ export const DashboardView: React.FC = () => {
       Icon: ClipboardList,
       title: "Test Results",
       description: "Check your recent results",
-      href: "/test-results",
+      href: "/test-reports",
     },
   ];
 

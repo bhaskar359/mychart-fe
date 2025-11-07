@@ -1,221 +1,166 @@
-// src/features/test-reports/TestReportsView.tsx (Refactored)
-
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React from "react";
+import { Search, FlaskConical, Settings, ChevronUp, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import {
-  ArrowLeft,
-  Search,
-  X,
-  ClipboardList,
-  User,
-  ChevronUp,
-  ChevronDown,
-  Settings,
-  FlaskConical,
-} from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Link } from "react-router-dom";
 
-// Data structure for sample reports
-interface TestReport {
+// --- Mock Data Structure ---
+interface TestResult {
   id: number;
-  name: string;
+  title: string;
   date: string;
-  status: "Normal" | "Abnormal";
-  provider: string;
+  physician: string;
+  status?: "Abnormal"; // Only present for abnormal results
 }
 
-const allReports: TestReport[] = [
+const mockResults: TestResult[] = [
   {
-    id: 101,
-    name: "TSH and Free T4",
+    id: 1,
+    title: "TSH and Free T4",
     date: "Mar 16, 2025",
-    status: "Normal",
-    provider: "Charlene Johnson, APRN",
+    physician: "Charlene Johnson, APRN",
   },
   {
-    id: 102,
-    name: "Test 2",
+    id: 2,
+    title: "Test 2",
     date: "Mar 16, 2025",
+    physician: "Thomson White, APRN",
     status: "Abnormal",
-    provider: "Thomson White, APRN",
   },
   {
-    id: 103,
-    name: "Test 3",
+    id: 3,
+    title: "Test 3",
     date: "Mar 12, 2025",
-    status: "Normal",
-    provider: "Charlene Johnson, APRN",
+    physician: "Charlene Johnson, APRN",
   },
   {
-    id: 104,
-    name: "Test 4",
+    id: 4,
+    title: "Test 4",
     date: "Mar 12, 2025",
-    status: "Normal",
-    provider: "Walker Red, TRPN",
+    physician: "Walker Red, TRPN",
   },
 ];
 
-// Component for a single result row
-const ResultRow: React.FC<{ report: TestReport }> = ({ report }) => {
-  const statusClasses =
-    report.status === "Abnormal"
-      ? "bg-yellow-100 text-yellow-800 border border-yellow-300"
-      : "text-gray-600";
-
-  return (
-    <div className="flex items-center py-3 px-4 border-b last:border-b-0">
-      {/* Icon and Title */}
-      <div className="flex items-center w-5/12">
-        <FlaskConical className="w-5 h-5 text-gray-500 mr-3 flex-shrink-0" />
-        <div>
-          <h4 className="text-sm font-semibold text-gray-800">{report.name}</h4>
-          <p className="text-xs text-muted-foreground">{report.date}</p>
-        </div>
-      </div>
-
-      {/* Status Tag */}
-      <div className="w-2/12">
-        {report.status === "Abnormal" && (
-          <span
-            className={`px-2 py-0.5 rounded-full text-xs font-medium ${statusClasses}`}
-          >
-            Abnormal
-          </span>
-        )}
-      </div>
-
-      {/* Provider */}
-      <div className="w-5/12 flex items-center justify-end text-sm">
-        <User className="w-4 h-4 text-gray-400 mr-2" />
-        <span className="text-gray-700">{report.provider}</span>
-      </div>
-    </div>
-  );
-};
-
 export const TestReportsView: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [showFilters, setShowFilters] = useState(true); // Matches open state in screenshot
-
-  // Simple filter logic for display count
-  const filteredReports = allReports.filter((report) =>
-    report.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   return (
-    <div className="p-6 md:p-10 lg:p-12 bg-white flex-grow">
-      <div className="max-w-7xl mx-auto flex">
-        {/* A. Main Content Column */}
-        <div className="flex-grow max-w-4xl mr-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-6">
-            Test Results
-          </h1>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <h1 className="text-3xl font-semibold text-foreground mb-6">
+        Test Results
+      </h1>
 
+      <div className="flex flex-col lg:flex-row gap-8">
+        {/* --- Left Column: Search and Results --- */}
+        <div className="flex-grow lg:w-3/4">
           {/* Search Bar */}
-          <div className="relative flex items-center mb-8 border border-gray-300 rounded-lg shadow-sm">
-            <Search className="w-5 h-5 text-gray-500 ml-4" />
-            <input
-              type="text"
+          <div className="relative mb-6">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Input
               placeholder="Search test results..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full p-3 pl-2 pr-10 focus:outline-none rounded-lg"
+              className="pl-10 pr-4 py-6 text-base"
             />
-            {searchTerm && (
-              <X
-                className="w-5 h-5 text-gray-500 mr-4 cursor-pointer hover:text-red-500"
-                onClick={() => setSearchTerm("")}
-              />
-            )}
           </div>
 
-          {/* Results List */}
-          <h2 className="text-xl font-semibold text-gray-800 mb-2">
-            Individual Results
-            <span className="text-sm font-normal text-muted-foreground ml-2">
-              ({filteredReports.length} of {allReports.length})
-            </span>
+          {/* Individual Results Container */}
+          <h2 className="text-lg font-medium mb-3">
+            Individual Results ({mockResults.length} of {mockResults.length})
           </h2>
 
-          <Card className="p-0 border border-gray-200 shadow-lg mb-8">
-            {filteredReports.length > 0 ? (
-              filteredReports.map((report) => (
-                <ResultRow key={report.id} report={report} />
-              ))
-            ) : (
-              <p className="p-4 text-center text-muted-foreground">
-                No results found matching "{searchTerm}".
-              </p>
-            )}
-            <p className="text-center text-xs text-muted-foreground py-2">
-              End of results
-            </p>
-          </Card>
+          {/* Refactored: Iterating over results to create individual cards */}
+          <div className="space-y-4">
+            {mockResults.map((result) => (
+              <div
+                key={result.id}
+                // APPLYING CARD STYLES TO EACH ITEM:
+                // White background, rounded, subtle border, and shadow-sm for the lift effect
+                className="bg-white rounded-lg border border-border p-4 shadow-sm transition-all duration-150 hover:shadow-md cursor-pointer"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    {/* Icon: Flask or a suitable icon from the screenshot */}
+                    <FlaskConical className="h-6 w-6 text-brandPrimary" />
 
-          {/* Home page button */}
-          <div className="mt-12 text-center">
-            <Link to="/dashboard">
-              <Button variant="outline" className="px-6 py-3 border-gray-300">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Home page
-              </Button>
-            </Link>
+                    <div>
+                      {/* Title and Date */}
+                      <p className="font-medium text-foreground">
+                        {result.title}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {result.date}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-4">
+                    {/* Abnormal Status Tag */}
+                    {result.status === "Abnormal" && (
+                      <span className="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                        Abnormal
+                      </span>
+                    )}
+                    {/* Physician Name */}
+                    <p className="text-sm text-muted-foreground hidden sm:block">
+                      {result.physician}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
+
+          <p className="text-center text-muted-foreground mt-6">
+            End of results
+          </p>
         </div>
 
-        {/* B. Sidebar Column (Settings and Filters) */}
-        <Card className="w-80 p-0 shadow-md border border-gray-100 flex-shrink-0 h-fit bg-gray-50 rounded-lg">
-          {/* Header with Toggle */}
-          <div
-            className="flex justify-between items-center p-4 cursor-pointer border-b bg-white rounded-t-lg"
-            onClick={() => setShowFilters(!showFilters)}
-          >
-            <h3 className="text-lg font-bold text-gray-800 flex items-center">
-              <Settings className="w-5 h-5 mr-2" /> Settings and filters
-            </h3>
-            {showFilters ? (
-              <ChevronUp className="w-5 h-5 text-gray-500" />
-            ) : (
-              <ChevronDown className="w-5 h-5 text-gray-500" />
-            )}
-          </div>
+        {/* --- Right Column: Settings and Filters --- */}
+        <div className="lg:w-1/4">
+          <div className="bg-white rounded-lg border border-border shadow-sm p-4 space-y-4">
+            <div className="flex items-center justify-between font-semibold text-foreground">
+              <span className="flex items-center">
+                <Settings className="h-5 w-5 mr-2" /> Settings and filters
+              </span>
+              <ChevronUp className="h-5 w-5 cursor-pointer" />
+            </div>
+            <hr className="border-border" />
 
-          {/* Filter Content */}
-          {showFilters && (
-            <div className="p-4 space-y-4">
-              <h4 className="font-semibold text-gray-700">
+            <div className="space-y-2">
+              <p className="text-sm font-medium">
                 Show results from hospital visits?
-              </h4>
+              </p>
               <div className="flex space-x-2">
-                {/* Mimicking the Yes/No buttons from the screenshot */}
+                {/* Buttons use primary/secondary color variables */}
                 <Button
                   size="sm"
-                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                  className="bg-brandPrimaryBg text-brandPrimaryBg-font"
                 >
                   Yes
                 </Button>
                 <Button
                   size="sm"
                   variant="outline"
-                  className="text-gray-700 border-gray-300"
+                  className="text-foreground border-border hover:bg-muted"
                 >
                   No
                 </Button>
               </div>
-
-              <div className="pt-2 border-t border-gray-200">
-                <Link
-                  to="/test-preferences"
-                  className="text-blue-600 hover:underline text-sm flex items-center"
-                >
-                  <ClipboardList className="w-4 h-4 mr-1" /> Test result
-                  preferences
-                </Link>
-              </div>
             </div>
-          )}
-        </Card>
+            <p className="text-sm text-brandAccent cursor-pointer">
+              Test result preferences
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Home Page Button */}
+      <div className="mt-10 text-center">
+        <Link to="/dashboard">
+          <Button
+            variant="outline"
+            className="border-border text-foreground hover:bg-muted"
+          >
+            <Home className="mr-2 h-4 w-4" /> Home page
+          </Button>
+        </Link>
       </div>
     </div>
   );

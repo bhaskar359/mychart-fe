@@ -13,6 +13,7 @@ import { PortalNav } from "@/components/PortalNav";
 import { SkeletonPage } from "@/components/layout/SkeletonPage";
 import { Login } from "./features/auth/Login";
 import { Register } from "./features/auth/Register";
+import { AuthSkeleton } from "@/features/skeletons/AuthSkeleton";
 
 const AuthView = lazy(() =>
   import("@/features/auth/AuthView").then((module) => ({
@@ -73,7 +74,7 @@ const PortalLayout: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-      <main className="flex-grow">
+      <main className="grow">
         <Suspense fallback={<SkeletonPage type="portal" />}>
           <Outlet />
         </Suspense>
@@ -84,7 +85,7 @@ const PortalLayout: React.FC = () => {
 };
 
 const App: React.FC = () => {
-  const isAuthenticated = true;
+  const isAuthenticated = false;
 
   return (
     <BrowserRouter>
@@ -95,7 +96,7 @@ const App: React.FC = () => {
             isAuthenticated ? (
               <Navigate to="/dashboard" replace />
             ) : (
-              <Suspense fallback={<SkeletonPage type="auth" />}>
+              <Suspense fallback={<AuthSkeleton />}>
                 <Login />
               </Suspense>
             )
@@ -107,7 +108,7 @@ const App: React.FC = () => {
             isAuthenticated ? (
               <Navigate to="/dashboard" replace />
             ) : (
-              <Suspense fallback={<SkeletonPage type="auth" />}>
+              <Suspense fallback={<AuthSkeleton />}>
                 <Register />
               </Suspense>
             )
@@ -124,20 +125,73 @@ const App: React.FC = () => {
             )
           }
         >
-          <Route path="dashboard" element={<DashboardView />} />
+          <Route
+            path="dashboard"
+            element={
+              <Suspense fallback={<SkeletonPage type="dashboard" />}>
+                <DashboardView />
+              </Suspense>
+            }
+          />
 
           <Route path="/" element={<FeatureLayout />}>
-            <Route path="appointments" element={<AppointmentsView />} />
+            <Route
+              path="appointments"
+              element={
+                <Suspense fallback={<SkeletonPage type="appointments" />}>
+                  <AppointmentsView />
+                </Suspense>
+              }
+            />
             <Route
               path="appointments/imaging-visit"
-              element={<ImagingVisitView />}
+              element={
+                <Suspense fallback={<SkeletonPage type="imaging" />}>
+                  <ImagingVisitView />
+                </Suspense>
+              }
             />
 
-            <Route path="visits" element={<VisitsView />} />
-            <Route path="messages" element={<MessagesView />} />
-            <Route path="billing" element={<BillingView />} />
-            <Route path="medications" element={<MedicationsView />} />
-            <Route path="test-reports" element={<TestReportsView />} />
+            <Route
+              path="visits"
+              element={
+                <Suspense fallback={<SkeletonPage type="visits" />}>
+                  <VisitsView />
+                </Suspense>
+              }
+            />
+            <Route
+              path="messages"
+              element={
+                <Suspense fallback={<SkeletonPage type="messages" />}>
+                  <MessagesView />
+                </Suspense>
+              }
+            />
+            <Route
+              path="billing"
+              element={
+                <Suspense fallback={<SkeletonPage type="billing" />}>
+                  <BillingView />
+                </Suspense>
+              }
+            />
+            <Route
+              path="medications"
+              element={
+                <Suspense fallback={<SkeletonPage type="medications" />}>
+                  <MedicationsView />
+                </Suspense>
+              }
+            />
+            <Route
+              path="test-reports"
+              element={
+                <Suspense fallback={<SkeletonPage type="test-reports" />}>
+                  <TestReportsView />
+                </Suspense>
+              }
+            />
           </Route>
 
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
