@@ -1,167 +1,156 @@
 import React from "react";
-import { Search, FlaskConical, Settings, ChevronUp, Home } from "lucide-react";
+import { useTestResults } from "@/hooks/useTestResults";
+import { TestReportsSkeleton } from "../skeletons/TestReportsSkeleton";
+import {
+	Search,
+	FlaskConical,
+	Settings,
+	ChevronUp,
+	AlertCircle,
+	CircleUser,
+	User,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router-dom";
-
-// --- Mock Data Structure ---
-interface TestResult {
-  id: number;
-  title: string;
-  date: string;
-  physician: string;
-  status?: "Abnormal"; // Only present for abnormal results
-}
-
-const mockResults: TestResult[] = [
-  {
-    id: 1,
-    title: "TSH and Free T4",
-    date: "Mar 16, 2025",
-    physician: "Charlene Johnson, APRN",
-  },
-  {
-    id: 2,
-    title: "Test 2",
-    date: "Mar 16, 2025",
-    physician: "Thomson White, APRN",
-    status: "Abnormal",
-  },
-  {
-    id: 3,
-    title: "Test 3",
-    date: "Mar 12, 2025",
-    physician: "Charlene Johnson, APRN",
-  },
-  {
-    id: 4,
-    title: "Test 4",
-    date: "Mar 12, 2025",
-    physician: "Walker Red, TRPN",
-  },
-];
+import { formatDate } from "@/lib/utils";
+import { HomePageButton } from "@/components/layout/HomePageButton";
 
 export const TestReportsView: React.FC = () => {
-  return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-3xl font-semibold text-foreground mb-6">
-        Test Results
-      </h1>
+	// fetch results
+	const { results, isLoading, isError, error } = useTestResults();
 
-      <div className="flex flex-col lg:flex-row gap-8">
-        {/* --- Left Column: Search and Results --- */}
-        <div className="flex-grow lg:w-3/4">
-          {/* Search Bar */}
-          <div className="relative mb-6">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-            <Input
-              placeholder="Search test results..."
-              className="pl-10 pr-4 py-6 text-base"
-            />
-          </div>
+	if (isLoading) return <TestReportsSkeleton />;
 
-          {/* Individual Results Container */}
-          <h2 className="text-lg font-medium mb-3">
-            Individual Results ({mockResults.length} of {mockResults.length})
-          </h2>
+	if (isError) {
+		return (
+			<div className="max-w-7xl mx-auto px-4 py-16 text-center">
+				<AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+				<h1 className="text-2xl font-semibold text-red-700">
+					Error Loading Results
+				</h1>
+				<p className="text-muted-foreground mt-2">
+					Could not retrieve your test reports. Please try again later.
+				</p>
+				<p className="text-xs text-gray-500 mt-1">
+					{error instanceof Error ? error.message : "Unknown error"}
+				</p>
+			</div>
+		);
+	}
 
-          {/* Refactored: Iterating over results to create individual cards */}
-          <div className="space-y-4">
-            {mockResults.map((result) => (
-              <div
-                key={result.id}
-                // APPLYING CARD STYLES TO EACH ITEM:
-                // White background, rounded, subtle border, and shadow-sm for the lift effect
-                className="bg-white rounded-lg border border-border p-4 shadow-sm transition-all duration-150 hover:shadow-md cursor-pointer"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    {/* Icon: Flask or a suitable icon from the screenshot */}
-                    <FlaskConical className="h-6 w-6 text-brandPrimary" />
+	const reportCount = results ? results.length : 0;
 
-                    <div>
-                      {/* Title and Date */}
-                      <p className="font-medium text-foreground">
-                        {result.title}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {result.date}
-                      </p>
-                    </div>
-                  </div>
+	return (
+		<div className="mx-auto py-10">
+			<div className="flex flex-col lg:flex-row gap-8">
+				{/* --- LEFT SIDE: Results --- */}
+				<div className="grow lg:w-3/4 bg-[#F4F5F6] pl-10 rounded-r-4xl inset-shadow-[0px_4px_25px_3px_rgba(0,0,0,0.25)] inset-shadow-gray-200 p-6">
+					<h1 className="text-3xl font-semibold text-[#003D72] mb-6">
+						Test Results
+					</h1>
+					<div className="relative mb-8 bg-white rounded-full">
+						<Input
+							placeholder="Search test results..."
+							className="h-12 pl-6 pr-12 text-[15px] border border-[#C6D2E1] rounded-full focus:ring-2 focus:ring-[#00529C]"
+						/>
+						<Search className="absolute right-4 top-1/2 transform -translate-y-1/2 text-[#6B7280] h-5 w-5" />
+					</div>
 
-                  <div className="flex items-center space-x-4">
-                    {/* Abnormal Status Tag */}
-                    {result.status === "Abnormal" && (
-                      <span className="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
-                        Abnormal
-                      </span>
-                    )}
-                    {/* Physician Name */}
-                    <p className="text-sm text-muted-foreground hidden sm:block">
-                      {result.physician}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+					<div className="relative">
+						<h2 className="text-2xl text-[#003D72] mb-4">Individual Results</h2>
+						<span className="absolute right-6 top-1/2 -translate-y-1/2 text-sm text-gray-500 italic">
+							({reportCount} of {results.length})
+						</span>
+					</div>
 
-          <p className="text-center text-muted-foreground mt-6">
-            End of results
-          </p>
-        </div>
+					<div className="space-y-5">
+						{reportCount > 0 ? (
+							results.map((result) => (
+								<div
+									key={result.id}
+									className="flex items-center justify-between bg-white shadow-md rounded-2xl px-6 py-4 hover:shadow-lg transition-all duration-200"
+								>
+									{/* Left: Icon + Test Info */}
+									<div className="flex items-center gap-4">
+										<FlaskConical className="text-[#00529C] h-6 w-6" />
+										<div>
+											<p className="text-[#00529C] text-[17px] leading-tight">
+												{result.test_name}
+											</p>
+											<p className="text-sm text-[#767676]">
+												{formatDate(result.result_date)}
+											</p>
+										</div>
+									</div>
 
-        {/* --- Right Column: Settings and Filters --- */}
-        <div className="lg:w-1/4">
-          <div className="bg-white rounded-lg border border-border shadow-sm p-4 space-y-4">
-            <div className="flex items-center justify-between font-semibold text-foreground">
-              <span className="flex items-center">
-                <Settings className="h-5 w-5 mr-2" /> Settings and filters
-              </span>
-              <ChevronUp className="h-5 w-5 cursor-pointer" />
-            </div>
-            <hr className="border-border" />
+									{/* Middle: Status Badge */}
+									{result.status.toLowerCase() === "abnormal" && (
+										<span className="bg-[#F5E8DA] text-[#8C4B0E] text-sm font-medium px-4 py-1 rounded-full border border-[#E0CBB3]">
+											Abnormal
+										</span>
+									)}
 
-            <div className="space-y-2">
-              <p className="text-sm font-medium">
-                Show results from hospital visits?
-              </p>
-              <div className="flex space-x-2">
-                {/* Buttons use primary/secondary color variables */}
-                <Button
-                  size="sm"
-                  className="bg-brandPrimaryBg text-brandPrimaryBg-font"
-                >
-                  Yes
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="text-foreground border-border hover:bg-muted"
-                >
-                  No
-                </Button>
-              </div>
-            </div>
-            <p className="text-sm text-brandAccent cursor-pointer">
-              Test result preferences
-            </p>
-          </div>
-        </div>
-      </div>
+									{/* Right: Physician */}
+									<p className="text-sm text-[#757575] font-medium flex items-center w-1/4 gap-2">
+										<User className="h-8 w-8 p-0.5 bg-[#DBDBDB] rounded-full" />
+										{result.physician_first_name} {result.physician_last_name}
+									</p>
+								</div>
+							))
+						) : (
+							<div className="p-10 text-center bg-gray-50 rounded-2xl border border-dashed border-gray-300 text-gray-500">
+								No test results found for your account.
+							</div>
+						)}
+					</div>
 
-      {/* Home Page Button */}
-      <div className="mt-10 text-center">
-        <Link to="/dashboard">
-          <Button
-            variant="outline"
-            className="border-border text-foreground hover:bg-muted"
-          >
-            <Home className="mr-2 h-4 w-4" /> Home page
-          </Button>
-        </Link>
-      </div>
-    </div>
-  );
+					<p className="text-center italic text-[#6B7280] mt-8">
+						End of results
+					</p>
+				</div>
+
+				{/* --- RIGHT SIDE: Settings --- */}
+				<div className="grow lg:w-1/4 bg-[#F4F5F6] rounded-l-4xl inset-shadow-[0px_4px_25px_3px_rgba(0,0,0,0.25)] inset-shadow-gray-200 p-6">
+					<div className=" bg-white rounded-3xl border border-[#E2E8F0] shadow-md p-5 space-y-4 h-fit">
+						<div className="flex items-center justify-between text-[#1E293B] font-semibold">
+							<span className="flex items-center">
+								<Settings className="h-5 w-5 mr-2" />
+								Settings and filters
+							</span>
+							<ChevronUp className="h-5 w-5 cursor-pointer text-[#475569]" />
+						</div>
+						<hr className="border-[#E2E8F0]" />
+
+						<div className="space-y-2">
+							<p className="text-sm font-medium text-[#334155]">
+								Show results from hospital visits?
+							</p>
+							<div className="flex gap-2">
+								<Button
+									size="sm"
+									className="bg-[#00529C] text-white hover:bg-[#004080]"
+								>
+									Yes
+								</Button>
+								<Button
+									size="sm"
+									variant="outline"
+									className="text-[#1E293B] border-[#CBD5E1] hover:bg-[#F1F5F9]"
+								>
+									No
+								</Button>
+							</div>
+						</div>
+
+						<p className="text-sm text-[#00529C] cursor-pointer hover:underline">
+							Test result preferences
+						</p>
+					</div>
+				</div>
+			</div>
+
+			{/* --- Bottom: Home Page Button --- */}
+			<HomePageButton />
+		</div>
+	);
 };

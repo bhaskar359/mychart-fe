@@ -1,85 +1,36 @@
-// src/components/layout/Footer.tsx
-
 import React from "react";
-import { Separator } from "@/components/ui/separator";
 
 export const Footer: React.FC = () => {
-  return (
-    <footer className="w-full bg-gray-50 border-t mt-12">
-      <div className="py-8 px-6 lg:px-10 max-w-7xl mx-auto">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-sm">
-          <div>
-            <h4 className="font-semibold mb-2 text-gray-800">Resources</h4>
-            <ul className="space-y-1 text-muted-foreground">
-              <li>
-                <a href="#" className="hover:underline">
-                  FAQs
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:underline">
-                  Help Center
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:underline">
-                  Contact Us
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-semibold mb-2 text-gray-800">Legal</h4>
-            <ul className="space-y-1 text-muted-foreground">
-              <li>
-                <a href="#" className="hover:underline">
-                  Privacy Policy
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:underline">
-                  Terms of Service
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:underline">
-                  Patient Rights
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-semibold mb-2 text-gray-800">About</h4>
-            <ul className="space-y-1 text-muted-foreground">
-              <li>
-                <a href="#" className="hover:underline">
-                  Our Clinic
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:underline">
-                  Provider Directory
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-semibold mb-2 text-gray-800">
-              MyChart Support
-            </h4>
-            <p className="text-muted-foreground">Call us at (555) 123-4567</p>
-          </div>
-        </div>
+	return (
+		<footer className="w-full bg-[#F8FAFC] rounded-t-4xl inset-shadow-[0px_4px_25px_3px_rgba(0,0,0,0.25)] inset-shadow-gray-200 mt-16">
+			<div className="max-w-5xl mx-auto text-center py-8 px-4 text-sm text-[#4B5563]">
+				{/* Top Links */}
+				<div className="flex flex-col justify-center items-center gap-x-6 gap-y-5 mb-4">
+					<div className="flex justify-between gap-x-6">
+						<a href="#" className="hover:underline">
+							Interoperability Guide
+						</a>
+						<a href="#" className="hover:underline">
+							Terms and Conditions
+						</a>
+					</div>
+					<a href="#" className="hover:underline">
+						Contact Us
+					</a>
+					<a href="#" className="hover:underline">
+						High Contrast Theme
+					</a>
+				</div>
 
-        <Separator className="my-8" />
+				{/* Divider line effect (optional subtle top shadow) */}
+				<div className="border-t border-gray-200 w-3/4 mx-auto mb-4 opacity-50" />
 
-        <div className="text-center text-xs text-muted-foreground">
-          &copy; {new Date().getFullYear()} MyChart Portal. All rights reserved.
-          <p className="mt-1">
-            A project developed using React, TypeScript, and Tailwind CSS.
-          </p>
-        </div>
-      </div>
-    </footer>
-  );
+				{/* Footer Text */}
+				<p className="text-xs text-[#6B7280]">
+					MyChart® Prototype Design for HCI Licensed by, to, from Sai Mukesh
+					Reddy Gutha
+				</p>
+			</div>
+		</footer>
+	);
 };

@@ -1,72 +1,115 @@
 // src/features/medications/components/MedicationCard.tsx
 
-import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { MessageSquare, RefreshCw, Trash2, Plus } from 'lucide-react';
+import React from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Info, Pill, RefreshCw, Trash2 } from "lucide-react";
+import { formatDate } from "@/lib/utils";
 
 interface MedicationCardProps {
-    name: string;
-    dosage: string;
-    details: string;
-    pharmacyDetails: string;
-    approvedBy: string;
-    status: 'Current' | 'RefillNeeded' | 'Inactive';
+	med: {
+		id: string;
+		medication_name: string;
+		dosage_strength: string;
+		form_route: string;
+		instructions: string;
+		prescription_date: string;
+		last_dispensed_date: string | null;
+		status: string;
+		refill_details: string | null;
+		pharmacy_name: string | null;
+		pharmacy_phone: string | null;
+		type: string;
+		physician_first_name: string;
+		physician_last_name: string;
+	};
 }
 
-export const MedicationCard: React.FC<MedicationCardProps> = ({ 
-    name, dosage, details, pharmacyDetails, approvedBy, status 
-}) => {
-    const isRefillable = status === 'Current';
+export const MedicationCard: React.FC<MedicationCardProps> = ({ med }) => {
+	const isExpired = med.status === "Expired";
+	const isOTC = med.type === "OTC";
 
-    return (
-        <Card className="p-4 mb-4 border border-gray-200 shadow-sm">
-            <CardContent className="p-0">
-                <div className="flex justify-between items-start mb-2">
-                    {/* Title and Dosage */}
-                    <div>
-                        <h4 className="text-lg font-semibold text-gray-800">{name}</h4>
-                        <p className="text-sm text-muted-foreground">{dosage}</p>
-                    </div>
-                    {/* Message Icon */}
-                    <MessageSquare className="w-5 h-5 text-gray-400 cursor-pointer hover:text-blue-600" />
-                </div>
+	return (
+		<Card className="p-6 rounded-3xl shadow-md border border-gray-100 bg-white">
+			<CardContent className="p-0 space-y-5">
+				{/* Header Section */}
+				<div className="flex justify-between items-start">
+					<div>
+						<h3 className="text-[18px] font-semibold text-[#1E3A8A]">
+							{med.medication_name}
+						</h3>
+						{/* <p className="text-sm text-gray-500 italic">
+							Commonly known as:{" "}
+							<span className="font-medium not-italic text-gray-600">
+								{commonName}
+							</span>
+						</p> */}
+						<div className="flex items-center mt-1 text-[#2563EB] text-sm font-medium cursor-pointer">
+							<Info className="h-4 w-4 mr-1" />
+							Learn more
+						</div>
+					</div>
+					<Pill className="w-8 h-8 text-[#1E3A8A]" />
+				</div>
 
-                {/* Status/Warning Box */}
-                {!isRefillable && (
-                    <div className="bg-red-50 border-l-4 border-red-400 p-3 text-sm text-red-700 mb-4">
-                        This prescription cannot be refilled through MyChart. Contact your pharmacy for a refill.
-                    </div>
-                )}
+				{/* Instructions */}
+				<div>
+					<p className="text-gray-800 text-sm">{med.instructions}</p>
+					<p className="text-sm text-gray-500 mt-1">{med.refill_details}</p>
+				</div>
 
-                {/* Details Grid */}
-                <div className="grid grid-cols-2 gap-4 text-sm mt-4">
-                    <div>
-                        <p className="font-medium">Prescription Details</p>
-                        <p className="text-muted-foreground">{details}</p>
-                    </div>
-                    <div>
-                        <p className="font-medium">Pharmacy Details</p>
-                        <p className="text-muted-foreground">{pharmacyDetails}</p>
-                    </div>
-                </div>
+				{/* Details Section */}
+				<div className="bg-gray-100 rounded-2xl p-4 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+					{/* Prescription Details */}
+					<div>
+						<p className="font-medium text-gray-800 mb-1">
+							Prescription Details
+						</p>
+						<p className="text-gray-500">
+							Prescribed on{" "}
+							<span className="text-gray-700 font-medium">
+								{formatDate(med.prescription_date)}
+							</span>
+						</p>
+						<p className="text-gray-500">
+							Approved by{" "}
+							<span className="text-[#2563EB] font-medium cursor-pointer">
+								{med.physician_first_name} {med.physician_last_name}
+							</span>
+						</p>
+					</div>
 
-                <div className="flex justify-between items-center pt-4 border-t mt-4">
-                    <p className="text-xs text-muted-foreground">Approved by: {approvedBy}</p>
-                    
-                    {/* Action Buttons */}
-                    <div className="flex space-x-2">
-                        {isRefillable && (
-                            <Button variant="outline" className="text-blue-600 hover:bg-blue-50">
-                                <RefreshCw className="w-4 h-4 mr-2" /> Request refill
-                            </Button>
-                        )}
-                        <Button variant="outline" className="text-red-600 hover:bg-red-50">
-                            <Trash2 className="w-4 h-4 mr-2" /> Remove
-                        </Button>
-                    </div>
-                </div>
-            </CardContent>
-        </Card>
-    );
+					{/* Refill Details */}
+					<div>
+						<p className="font-medium text-gray-800 mb-1">Refill Details</p>
+						<p className="text-gray-500">Quantity - {}</p>
+						<p className="text-gray-500">Day supply - {}</p>
+					</div>
+
+					{/* Pharmacy Details */}
+					<div>
+						<p className="font-medium text-gray-800 mb-1">Pharmacy Details</p>
+						<p className="text-gray-500">{med.pharmacy_name}</p>
+						{/* <p className="text-gray-500">{med.pharmacy_address}</p> */}
+						<p className="text-gray-500">{med.pharmacy_phone}</p>
+					</div>
+				</div>
+
+				{/* Action Buttons */}
+				<div className="flex items-center justify-end gap-3 pt-2">
+					<Button className="bg-[#1E40AF] hover:bg-[#1E3A8A] text-white rounded-full px-5 py-2 text-sm font-medium flex items-center gap-2 shadow-sm">
+						<RefreshCw className="h-4 w-4" />
+						Request refill
+					</Button>
+					<Button
+						variant="outline"
+						className="border border-[#1E40AF] text-[#1E40AF] hover:bg-[#EAF2FF] rounded-full px-5 py-2 text-sm font-medium flex items-center gap-2"
+					>
+						<Trash2 className="h-4 w-4" />
+						Remove
+					</Button>
+				</div>
+			</CardContent>
+		</Card>
+	);
 };
