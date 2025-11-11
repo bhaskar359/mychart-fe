@@ -23,7 +23,7 @@ export type RegisterFormData = z.infer<typeof RegisterSchema>;
 
 export const useRegister = () => {
 	const navigate = useNavigate();
-	const loginSuccess = useAuthStore((state) => state.loginSuccess);
+	const loginSuccess = useAuthStore((state) => state.login);
 
 	const [formData, setFormData] = useState<RegisterFormData>({
 		firstName: "",
@@ -55,6 +55,7 @@ export const useRegister = () => {
 
 			navigate("/dashboard");
 		} catch (error) {
+			console.error(error);
 			const apiErrorData = error.response?.data;
 
 			const validationErrors = apiErrorData?.errors;
