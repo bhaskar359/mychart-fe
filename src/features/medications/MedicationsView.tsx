@@ -10,10 +10,15 @@ import {
 	Plus,
 	Printer,
 	Stethoscope,
+	HeartPulse,
 } from "lucide-react";
 import { MedicationCard } from "./components/MedicationCard";
 import { MedicationsSkeleton } from "../skeletons/MedicationsSkeleton";
 import { useMedications } from "@/hooks/useMedications";
+import Allergy from "@/assets/Allergy.svg";
+import Immuninization from "@/assets/Immunization.svg";
+import PreventiveCare from "@/assets/Preventive Care.svg";
+import { HomePageButton } from "@/components/layout/HomePageButton";
 
 export const MedicationsView: React.FC = () => {
 	const { medications, isLoading, isError, error } = useMedications();
@@ -99,12 +104,15 @@ export const MedicationsView: React.FC = () => {
 					</div>
 
 					<div className="my-8 text-center">
-						<Button
-							variant="outline"
-							className="text-blue-600 border-blue-300 hover:bg-blue-50"
-						>
-							<Plus className="w-4 h-4 mr-2" /> Report a medication
-						</Button>
+						<Card className="border-dashed border-2 border-gray-300 bg-gray-50 flex items-center justify-center min-h-[200px]">
+							<Button
+								variant="ghost"
+								className="text-[#00529C] cursor-pointer font-light flex items-center hover:text-[#00529c] hover:bg-gray-50"
+							>
+								<Plus className="w-5 h-5 border border-[#00529C] rounded-full p-0.5" />
+								Add a personal note
+							</Button>
+						</Card>
 					</div>
 				</div>
 
@@ -115,26 +123,38 @@ export const MedicationsView: React.FC = () => {
 					</h3>
 					<ul className="space-y-3 text-sm text-[#00529C]">
 						<li className="hover:underline flex cursor-pointer">
-							<Stethoscope size={18} />
+							<Stethoscope size={18} className="pr-1" />
 							Health Summary
 						</li>
 						<li className="hover:underline flex cursor-pointer">
-							<Stethoscope size={18} />
+							<HeartPulse size={18} className="pr-1" />
 							Health Issues
 						</li>
-						<li className="hover:underline flex cursor-pointer">Allergies</li>
 						<li className="hover:underline flex cursor-pointer">
+							<img src={Allergy} alt="Allergy" className="w-4 h-4 mr-1" />
+							Allergies
+						</li>
+						<li className="hover:underline flex cursor-pointer">
+							<img
+								src={Immuninization}
+								alt="Immunization"
+								className="w-4 h-4 mr-1"
+							/>
 							Immunization
 						</li>
 						<li className="hover:underline flex cursor-pointer">
+							<img
+								src={PreventiveCare}
+								alt="Preventive Care"
+								className="w-4 h-4 mr-1"
+							/>
 							Preventive Care
 						</li>
 					</ul>
 				</div>
 			</div>
 
-			<div className="pl-10 lg:w-3/4">
-				{/* Personal Notes Section */}
+			<div className="pl-10">
 				<h2 className="text-xl font-semibold text-gray-800 mt-12 mb-4">
 					Personal Notes About My Medications
 				</h2>
@@ -142,15 +162,17 @@ export const MedicationsView: React.FC = () => {
 					Notes entered here will not be viewable by your doctor.
 				</p>
 
-				<Card className="w-3/4 border-dashed border-2 border-gray-300 bg-gray-50 flex items-center justify-center min-h-[100px]">
+				<Card className="w-8/12 border-dashed border-2 border-gray-300 bg-gray-50 flex items-center justify-center min-h-[100px]">
 					<Button
 						variant="ghost"
-						className="text-blue-600 hover:bg-transparent"
+						className="text-[#00529C] cursor-pointer font-normal flex items-center hover:text-[#00529c] hover:bg-gray-50"
 					>
-						<Plus className="w-5 h-5 mr-2" /> Add a personal note
+						<Plus className="w-5 h-5 border border-[#00529C] rounded-full p-0.5" />
+						Add a personal note
 					</Button>
 				</Card>
 			</div>
+			<HomePageButton />
 		</div>
 	);
 };

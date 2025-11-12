@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { Stethoscope, Clock, ArrowLeft } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { HomePageButton } from "@/components/layout/HomePageButton";
 
 export const AppointmentsView: React.FC = () => {
 	return (
@@ -58,21 +59,14 @@ export const AppointmentsView: React.FC = () => {
 				</div>
 
 				{/* Note and Home Button */}
-				<p className="text-center text-gray-200 text-sm mb-8">
+				<p className="text-center text-gray-500 font-extralight text-sm mb-8">
 					Note:
-					<span className="text-black">
+					<span className="text-black font-light">
 						Need help scheduling? Please contact your Provider.
 					</span>
 				</p>
 
-				<div className="text-center">
-					<Link to="/dashboard">
-						<Button variant="outline" className="px-6 py-3 border-gray-300">
-							<ArrowLeft className="h-4 w-4 mr-2" />
-							Home page
-						</Button>
-					</Link>
-				</div>
+				<HomePageButton />
 			</div>
 		</div>
 	);

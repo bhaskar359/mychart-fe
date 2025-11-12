@@ -3,7 +3,7 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Info, Pill, RefreshCw, Trash2 } from "lucide-react";
+import { Info, Pill, RefreshCw, CircleMinus } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 
 interface MedicationCardProps {
@@ -80,32 +80,39 @@ export const MedicationCard: React.FC<MedicationCardProps> = ({ med }) => {
 					</div>
 
 					{/* Refill Details */}
-					<div>
-						<p className="font-medium text-gray-800 mb-1">Refill Details</p>
-						<p className="text-gray-500">Quantity - {}</p>
-						<p className="text-gray-500">Day supply - {}</p>
-					</div>
-
-					{/* Pharmacy Details */}
-					<div>
-						<p className="font-medium text-gray-800 mb-1">Pharmacy Details</p>
-						<p className="text-gray-500">{med.pharmacy_name}</p>
-						{/* <p className="text-gray-500">{med.pharmacy_address}</p> */}
-						<p className="text-gray-500">{med.pharmacy_phone}</p>
-					</div>
+					{!isExpired && (
+						<>
+							<div>
+								<p className="font-medium text-gray-800 mb-1">Refill Details</p>
+								<p className="text-gray-500">Quantity - {med.refill_details}</p>
+								<p className="text-gray-500">Day supply - {}</p>
+							</div>
+							<div>
+								<p className="font-medium text-gray-800 mb-1">
+									Pharmacy Details
+								</p>
+								<p className="text-gray-500">{med.pharmacy_name}</p>
+								{/* <p className="text-gray-500">{med.pharmacy_address}</p> */}
+								<p className="text-gray-500">{med.pharmacy_phone}</p>
+							</div>
+						</>
+					)}
 				</div>
 
 				{/* Action Buttons */}
-				<div className="flex items-center justify-end gap-3 pt-2">
-					<Button className="bg-[#1E40AF] hover:bg-[#1E3A8A] text-white rounded-full px-5 py-2 text-sm font-medium flex items-center gap-2 shadow-sm">
-						<RefreshCw className="h-4 w-4" />
-						Request refill
-					</Button>
+
+				<div className="flex items-center justify-center gap-3 pt-2">
+					{!isExpired && (
+						<Button className="bg-[#00529C] hover:bg-[#1E3A8A] text-white rounded-full px-5 py-2 text-sm font-medium flex items-center gap-2 shadow-sm">
+							<RefreshCw className="h-4 w-4" />
+							Request refill
+						</Button>
+					)}
 					<Button
 						variant="outline"
-						className="border border-[#1E40AF] text-[#1E40AF] hover:bg-[#EAF2FF] rounded-full px-5 py-2 text-sm font-medium flex items-center gap-2"
+						className="border border-[#00529C] text-[#00529C] hover:shadow rounded-full px-5 py-2 text-sm font-light flex items-center gap-2"
 					>
-						<Trash2 className="h-4 w-4" />
+						<CircleMinus className="h-4 w-4" />
 						Remove
 					</Button>
 				</div>

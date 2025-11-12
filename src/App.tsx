@@ -18,6 +18,7 @@ import { SkeletonPage } from "@/components/layout/SkeletonPage";
 import { Login } from "./features/auth/pages/LoginPage";
 import { Register } from "./features/auth/pages/RegisterPage";
 import { AuthSkeleton } from "@/features/skeletons/AuthSkeleton";
+import { UrgentCareView } from "./features/appointments/UrgentCareView";
 
 // --- LAZY-LOADED VIEWS (Optimization) ---
 
@@ -175,6 +176,14 @@ const App: React.FC = () => {
 								element={
 									<Suspense fallback={<SkeletonPage type="appointments" />}>
 										<AppointmentsView />
+									</Suspense>
+								}
+							/>
+							<Route
+								path="appointments/urgent-care"
+								element={
+									<Suspense fallback={<SkeletonPage type="appointments" />}>
+										<UrgentCareView />
 									</Suspense>
 								}
 							/>
