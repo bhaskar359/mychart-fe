@@ -48,9 +48,9 @@ export const MedicationsView: React.FC = () => {
 		<div className="mx-auto py-10">
 			<div className="flex flex-col lg:flex-row gap-8">
 				{/* A. Main Content Column */}
-				<div className="grow lg:w-3/4 bg-[#F4F5F6] pl-10 rounded-r-4xl inset-shadow-[0px_4px_25px_3px_rgba(0,0,0,0.25)] inset-shadow-gray-200 px-15 py-6">
+				<div className="grow lg:w-3/4 bg-[#F4F5F6] pl-10 rounded-r-4xl inset-shadow-[0px_4px_25px_3px_rgba(0,0,0,0.25)] px-15 py-6">
 					<div className="flex justify-between">
-						<h1 className="text-2xl font-semibold text-[#003D72] mb-6">
+						<h1 className="text-3xl font-semibold text-[#003D72] mb-6">
 							Medications
 						</h1>
 						<div className="flex gap-4">
@@ -117,7 +117,7 @@ export const MedicationsView: React.FC = () => {
 				</div>
 
 				{/* B. Sidebar Column (Related Links) */}
-				<div className="grow lg:w-1/4 bg-[#F4F5F6] rounded-l-4xl inset-shadow-[0px_4px_25px_3px_rgba(0,0,0,0.25)] inset-shadow-gray-200 p-6">
+				<div className="grow lg:w-1/4 bg-[#F4F5F6] rounded-l-4xl inset-shadow-[0px_4px_25px_3px_rgba(0,0,0,0.25)]  p-6">
 					<h3 className="text-lg font-bold text-[#003D72] mb-4">
 						Related Links
 					</h3>

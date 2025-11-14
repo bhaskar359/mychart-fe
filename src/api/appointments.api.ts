@@ -25,6 +25,22 @@ export async function fetchAllAppointments(): Promise<Appointment[]> {
 	return response.data.data.appointments;
 }
 
+export async function fetchAppointmentById(id: string) {
+	const authToken = localStorage.getItem("authToken");
+	if (!authToken) {
+		throw new Error("Authentication token missing.");
+	}
+
+	const response = await axios.get(`${BASE_URL}/appointments/${id}`, {
+		headers: {
+			Authorization: `Bearer ${authToken}`,
+		},
+	});
+
+	// Backend now returns a single appointment object
+	return response.data.data.appointment;
+}
+
 /**
  * Creates a new appointment using the multi-step form data.
  * The service layer will generate the UUID.

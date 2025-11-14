@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
 	fetchAllAppointments,
 	createNewAppointment,
+	fetchAppointmentById,
 } from "../api/appointments.api";
 import type {
 	Appointment,
@@ -32,6 +33,20 @@ export const useAppointments = () => {
 					: [],
 			}));
 		},
+	});
+};
+
+export const useAppointmentById = (id: string) => {
+	return useQuery<Appointment, Error>({
+		queryKey: ["appointment", id],
+		queryFn: () => fetchAppointmentById(id),
+		select: (app) => ({
+			...app,
+			appointment_date: new Date(app.appointment_date),
+			questionnaire_answers: Array.isArray(app.questionnaire_answers)
+				? app.questionnaire_answers
+				: [],
+		}),
 	});
 };
 

@@ -10,59 +10,59 @@ import { MedicationsSkeleton } from "@/features/skeletons/MedicationsSkeleton";
 import { TestReportsSkeleton } from "@/features/skeletons/TestReportsSkeleton";
 
 type SkeletonType =
-  | "auth"
-  | "portal"
-  | "dashboard"
-  | "appointments"
-  | "imaging"
-  | "visits"
-  | "messages"
-  | "billing"
-  | "medications"
-  | "test-reports"
-  | "feature";
+	| "auth"
+	| "portal"
+	| "dashboard"
+	| "appointments"
+	| "imaging"
+	| "visits"
+	| "messages"
+	| "billing"
+	| "medications"
+	| "test-reports"
+	| "feature";
 
 interface SkeletonPageProps {
-  type?: SkeletonType;
+	type?: SkeletonType;
 }
 
 export const SkeletonPage: React.FC<SkeletonPageProps> = ({
-  type = "portal",
+	type = "portal",
 }) => {
-  switch (type) {
-    case "auth":
-      return <AuthSkeleton />;
-    case "dashboard":
-    case "portal":
-    case "feature":
-      return <DashboardSkeleton />;
-    case "appointments":
-      return <AppointmentsSkeleton />;
-    case "imaging":
-      return <ImagingVisitSkeleton />;
-    case "visits":
-      return <VisitsSkeleton />;
-    case "messages":
-      return <MessagesSkeleton />;
-    case "billing":
-      return <BillingSkeleton />;
-    case "medications":
-      return <MedicationsSkeleton />;
-    case "test-reports":
-      return <TestReportsSkeleton />;
-    default:
-      return <DashboardSkeleton />;
-  }
+	switch (type) {
+		case "auth":
+			return <DashboardSkeleton />;
+		case "dashboard":
+		case "portal":
+		case "feature":
+			return <DashboardSkeleton />;
+		case "appointments":
+			return <AppointmentsSkeleton />;
+		case "imaging":
+			return <ImagingVisitSkeleton />;
+		case "visits":
+			return <VisitsSkeleton />;
+		case "messages":
+			return <MessagesSkeleton />;
+		case "billing":
+			return <BillingSkeleton />;
+		case "medications":
+			return <MedicationsSkeleton />;
+		case "test-reports":
+			return <TestReportsSkeleton />;
+		default:
+			return <DashboardSkeleton />;
+	}
 };
 
 export {
-  AuthSkeleton,
-  DashboardSkeleton,
-  AppointmentsSkeleton,
-  ImagingVisitSkeleton,
-  VisitsSkeleton,
-  MessagesSkeleton,
-  BillingSkeleton,
-  MedicationsSkeleton,
-  TestReportsSkeleton,
+	AuthSkeleton,
+	DashboardSkeleton,
+	AppointmentsSkeleton,
+	ImagingVisitSkeleton,
+	VisitsSkeleton,
+	MessagesSkeleton,
+	BillingSkeleton,
+	MedicationsSkeleton,
+	TestReportsSkeleton,
 };

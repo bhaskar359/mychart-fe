@@ -62,7 +62,6 @@ export interface Appointment {
  */
 export interface CreateAppointmentPayload {
 	// Required data from the user/form
-	physician_id: string;
 	appointment_type: Appointment["appointment_type"];
 	reason_for_visit: string;
 	appointment_date: string; // Sent as ISO Date String (YYYY-MM-DD)
@@ -83,4 +82,41 @@ export interface CreateAppointmentPayload {
 
 	// Questionnaire (Sent as an array of objects)
 	questionnaire_answers?: Array<{ question: string; answer: string }>;
+}
+
+// src/features/appointments/types.ts
+export interface QuestionnaireAnswer {
+	question: string;
+	answer: string;
+}
+
+export interface ImagingFormState {
+	// Step 1: general decisions (already in ImagingVisitView but kept for completeness)
+	scheduleMoreThanOne?: boolean | null;
+
+	// Questionnaire (Step 2)
+	examRelatedToAccident?: boolean | null;
+	haveInsurance?: boolean | null;
+	insuranceCompany?: string;
+	memberName?: string;
+	memberNumber?: string;
+	insurancePhone?: string;
+	referringProviderAddress?: string;
+
+	// Step 2b: imaging details
+	appointmentType?: string | null; // e.g., "MRI or MRA"
+	imagingBodyPart?: string | null;
+	hasReferral?: boolean | null;
+
+	// Step 3: location
+	locationId?: string | null;
+	locationName?: string | null;
+	locationAddress?: string | null;
+
+	// Step 4: time
+	appointmentDate?: string | null; // YYYY-MM-DD
+	appointmentTime?: string | null; // HH:MM
+
+	// aggregated questionnaire answers (for sending)
+	questionnaireAnswers?: QuestionnaireAnswer[];
 }

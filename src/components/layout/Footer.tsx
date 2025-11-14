@@ -2,7 +2,7 @@ import React from "react";
 
 export const Footer: React.FC = () => {
 	return (
-		<footer className="w-full bg-[#F8FAFC] rounded-t-4xl inset-shadow-[0px_4px_25px_3px_rgba(0,0,0,0.25)] inset-shadow-gray-200 mt-16">
+		<footer className="w-full bg-[#F8FAFC] rounded-t-4xl inset-shadow-[0px_4px_25px_3px_rgba(0,0,0,0.25)] mt-16">
 			<div className="max-w-5xl mx-auto text-center py-8 px-4 text-sm text-[#4B5563]">
 				{/* Top Links */}
 				<div className="flex flex-col justify-center items-center gap-x-6 gap-y-5 mb-4">

@@ -1,76 +1,208 @@
 // src/features/messages/MessagesView.tsx
 
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Send, ArrowLeft } from "lucide-react";
-import { ConversationCard } from "./components/ConversationCard";
+import { Search, Send } from "lucide-react";
+
+import { useMessages } from "@/hooks/useMessages";
+import { useBookmarks } from "@/hooks/useBookmarks";
+import { useArchive } from "@/hooks/useArchive";
+
+import { AppointmentMessageCard } from "./components/AppointmentMessageCard";
+import { QuestionnaireMessageCard } from "./components/QuestionnaireMessageCard";
+
 import { HomePageButton } from "@/components/layout/HomePageButton";
 
-const MESSAGE_TABS = [
+const TABS = [
 	"Conversations",
 	"Automated Messages",
 	"Appointments",
 	"Bookmarked",
-	"Trash",
+	"Archived",
 ];
 
 export const MessagesView: React.FC = () => {
+	const navigate = useNavigate();
+
+	// Hooks
+	const { messages } = useMessages(); // All message objects
+	const { bookmarks } = useBookmarks();
+	const { archived } = useArchive();
+
+	// State
 	const [activeTab, setActiveTab] = useState("Conversations");
 
-	const sampleMessage = {
-		subject:
-			"Your insurance has informed us that they need to contact them Patricia",
-		body: "Hello,\nI am contacting you regarding the claim we submitted to your insurance for your visit on 4/28/2025. Your insurance has informed us that they need you to contact them to confirm if you have other insurance. They will not make any payments for any claims that they receive on your behalf until they hear from you. You can call them at the number that is on your insurance card. If you have any questions, you can call the Social Health Billing Office at 813-555-9999 option 7.",
-		date: "Aug 29",
+	//----------------------------------
+	// FILTERED DATA
+	//----------------------------------
+
+	const appointmentMessages = messages.filter((m) => m.type === "appointment");
+	const questionnaireMessages = messages.filter(
+		(m) => m.type === "questionnaire"
+	);
+
+	const bookmarkedMessages = messages.filter((m) => bookmarks.includes(m.id));
+
+	const archivedMessages = messages.filter((m) => archived.includes(m.id));
+
+	//----------------------------------
+	// RENDER CARDS
+	//----------------------------------
+	const renderCards = () => {
+		switch (activeTab) {
+			case "Appointments":
+				if (appointmentMessages.length === 0)
+					return (
+						<p className="text-gray-500">No appointment messages found.</p>
+					);
+
+				return appointmentMessages.map((msg) => (
+					<AppointmentMessageCard
+						key={msg.id}
+						msg={msg}
+						onClick={() => navigate(`/messages/${msg.id}`)}
+					/>
+				));
+
+			case "Automated Messages":
+				if (questionnaireMessages.length === 0)
+					return <p className="text-gray-500">No automated messages found.</p>;
+
+				return questionnaireMessages.map((msg) => (
+					<QuestionnaireMessageCard
+						key={msg.id}
+						msg={msg}
+						onClick={() => navigate(`/messages/${msg.id}`)}
+					/>
+				));
+
+			case "Bookmarked":
+				if (bookmarkedMessages.length === 0)
+					return <p className="text-gray-500">No bookmarked messages.</p>;
+
+				return bookmarkedMessages.map((msg) =>
+					msg.type === "appointment" ? (
+						<AppointmentMessageCard
+							key={msg.id}
+							msg={msg}
+							onClick={() => navigate(`/messages/${msg.id}`)}
+						/>
+					) : (
+						<QuestionnaireMessageCard
+							key={msg.id}
+							msg={msg}
+							onClick={() => navigate(`/messages/${msg.id}`)}
+						/>
+					)
+				);
+
+			case "Archived":
+				if (archivedMessages.length === 0)
+					return <p className="text-gray-500">No archived messages.</p>;
+
+				return archivedMessages.map((msg) =>
+					msg.type === "appointment" ? (
+						<AppointmentMessageCard
+							key={msg.id}
+							msg={msg}
+							onClick={() => navigate(`/messages/${msg.id}`)}
+						/>
+					) : (
+						<QuestionnaireMessageCard
+							key={msg.id}
+							msg={msg}
+							onClick={() => navigate(`/messages/${msg.id}`)}
+						/>
+					)
+				);
+
+			default:
+				return (
+					<p className="text-gray-500">
+						Conversations will be implemented later.
+					</p>
+				);
+		}
+	};
+
+	//----------------------------------
+	// COUNT BADGES
+	//----------------------------------
+	const getTabCount = (tab: string) => {
+		switch (tab) {
+			case "Conversations":
+				return 0;
+			case "Automated Messages":
+				return questionnaireMessages.length;
+			case "Appointments":
+				return appointmentMessages.length;
+			case "Bookmarked":
+				return bookmarkedMessages.length;
+			case "Archived":
+				return archivedMessages.length;
+			default:
+				return 0;
+		}
 	};
 
 	return (
-		<div className="p-6 md:p-10 lg:p-12 bg-white flex-grow">
-			<div className="max-w-7xl mx-auto">
+		<div className="mx-auto py-10">
+			<div className="grow bg-[#F4F5F6] pl-10 rounded-r-4xl inset-shadow-[0px_4px_25px_3px_rgba(0,0,0,0.25)] p-6">
+				{/* HEADER */}
 				<div className="flex justify-between items-center mb-6">
 					<h1 className="text-3xl font-bold text-gray-800">Message Center</h1>
+
 					<div className="flex items-center space-x-4">
-						<div className="relative flex-grow min-w-[300px]">
+						<div className="relative grow min-w-[300px]">
 							<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500" />
 							<Input
-								placeholder="Search Conversations"
+								placeholder="Search Messages"
 								className="pl-10 py-2 border-gray-300 rounded-lg shadow-sm"
 							/>
 						</div>
+
 						<Button className="bg-blue-800 hover:bg-blue-700 text-white font-semibold flex items-center shadow-lg">
-							<Send className="w-4 h-4 mr-2" /> Send a Message
+							<Send className="w-4 h-4 mr-2" />
+							Send a Message
 						</Button>
 					</div>
 				</div>
 
-				<div className="flex border-b border-gray-300 mb-6">
-					{MESSAGE_TABS.map((tab) => (
-						<button
-							key={tab}
-							onClick={() => setActiveTab(tab)}
-							className={`px-4 py-2 text-sm font-medium transition-colors duration-200 
+				{/* TABS */}
+				<div className="flex border-b border-gray-300 mb-6 overflow-x-auto">
+					{TABS.map((tab) => {
+						const count = getTabCount(tab);
+
+						return (
+							<button
+								key={tab}
+								onClick={() => setActiveTab(tab)}
+								className={`relative px-4 py-2 text-sm font-medium transition-colors duration-200 whitespace-nowrap
                                 ${
 																	activeTab === tab
 																		? "border-b-4 border-blue-800 text-blue-800"
 																		: "text-gray-600 hover:text-gray-800"
 																}
                             `}
-						>
-							{tab}
-						</button>
-					))}
+							>
+								{tab}
+								{count > 0 && (
+									<span className="ml-2 px-2 py-0.5 bg-blue-800 text-white text-xs rounded-full">
+										{count}
+									</span>
+								)}
+							</button>
+						);
+					})}
 				</div>
 
-				<div className="space-y-4 max-w-4xl">
-					{activeTab === "Conversations" && (
-						<ConversationCard {...sampleMessage} />
-					)}
-				</div>
-
-				<HomePageButton />
+				{/* CARD LIST */}
+				<div className="max-w-4xl space-y-4">{renderCards()}</div>
 			</div>
+
+			<HomePageButton />
 		</div>
 	);
 };

@@ -1,13 +1,19 @@
 // src/features/appointments/ImagingVisitView.tsx
-
 import React, { useState } from "react";
-import { ScheduleStepper } from "./components/ScheduleStepper";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ScheduleStepper } from "./components/ScheduleStepper";
+import { QuestionnaireStep } from "./components/QuestionnaireStep";
+import { LocationStep } from "./components/LocationStep";
+import { TimeStep } from "./components/TimeStep";
+import { VerifyStep } from "./components/VerifyStep";
+import { SuccessModal } from "./components/SuccessModal";
+import { useCreateAppointment } from "../../hooks/useAppointments";
+// adjust path if your hook is in another folder
 
-// 5 steps as per the Figma screenshot
+import type { ImagingFormState } from "../../types/appointments.types";
+
 const APPOINTMENT_STEPS = [
 	{ id: 1, title: "Schedule Imaging Visit", subtitle: "Reason for Visit" },
 	{ id: 2, title: "Questionnaire" },
@@ -18,104 +24,220 @@ const APPOINTMENT_STEPS = [
 
 export const ImagingVisitView: React.FC = () => {
 	const navigate = useNavigate();
+	const createAppointment = useCreateAppointment();
 
-	// State to track the current step (starts at 1, matching the screenshot)
-	const [currentStep, setCurrentStep] = useState(1);
+	// adjust path if your hook is in another folder
 
-	// State for the form question (matches Yes/No buttons in the screenshot)
-	const [scheduleMoreThanOne, setScheduleMoreThanOne] = useState<
-		boolean | null
-	>(null);
+	const [currentStep, setCurrentStep] = useState<number>(1);
+	const [form, setForm] = useState<ImagingFormState>({
+		scheduleMoreThanOne: null,
+		questionnaireAnswers: [],
+	});
+	const [submitting, setSubmitting] = useState(false);
+	const [showSuccess, setShowSuccess] = useState(false);
 
-	const handleContinue = () => {
-		// In a real application, this would validate the form and navigate to step 2
-		console.log("Navigating to Questionnaire (Step 2)...");
-		setCurrentStep(2);
+	function patch(p: Partial<ImagingFormState>) {
+		setForm((prev) => ({ ...prev, ...p }));
+	}
+
+	const next = () => setCurrentStep((s) => Math.min(5, s + 1));
+	const back = () => setCurrentStep((s) => Math.max(1, s - 1));
+
+	// Submit final appointment (mock)
+	const handleSubmit = async () => {
+		if (
+			!form.appointmentDate ||
+			!form.appointmentTime ||
+			!form.locationName ||
+			!form.locationAddress
+		) {
+			alert("Missing required fields");
+			return;
+		}
+
+		setSubmitting(true);
+
+		const payload: CreateAppointmentPayload = {
+			appointment_type: "Imaging", // Required
+			reason_for_visit: "Patient scheduled imaging visit",
+
+			appointment_date: form.appointmentDate, // YYYY-MM-DD
+			appointment_time: form.appointmentTime + ":00", // convert "09:30" → "09:30:00"
+
+			location_name: form.locationName,
+			location_address: form.locationAddress,
+
+			status: "Scheduled",
+
+			// Optional imaging details
+			imaging_type: form.appointmentType ?? null,
+			imaging_body_part: form.imagingBodyPart ?? null,
+			has_referral: !!form.hasReferral,
+			referral_physician_id: null,
+
+			// Questionnaire answers
+			questionnaire_answers: [
+				{
+					question: "Is exam related to accident?",
+					answer: String(form.examRelatedToAccident),
+				},
+				{
+					question: "Do you have health insurance?",
+					answer: String(form.haveInsurance),
+				},
+				...(form.haveInsurance
+					? [
+							{
+								question: "Insurance Company",
+								answer: form.insuranceCompany ?? "",
+							},
+							{
+								question: "Member Name",
+								answer: form.memberName ?? "",
+							},
+							{
+								question: "Member Number",
+								answer: form.memberNumber ?? "",
+							},
+							{
+								question: "Insurance Phone",
+								answer: form.insurancePhone ?? "",
+							},
+							{
+								question: "Referring Provider Address",
+								answer: form.referringProviderAddress ?? "",
+							},
+					  ]
+					: []),
+			],
+		};
+
+		try {
+			const result = await createAppointment.mutateAsync(payload);
+
+			console.log("Appointment created:", result);
+
+			setShowSuccess(true); // open the modal
+		} catch (error) {
+			console.error("Failed to create appointment:", error);
+			alert("Could not create appointment.");
+		} finally {
+			setSubmitting(false);
+		}
 	};
 
 	return (
 		<div className="p-6 md:p-10 lg:p-12 bg-white flex-grow">
-			<div className="mx-auto">
-				{/* Back Link and Title */}
+			<div className="mx-auto max-w-6xl">
 				<div className="flex items-center mb-6">
 					<button
-						onClick={() => navigate(-1)} // Go back to the previous page (/appointments)
-						className="text-gray-700 hover:text-blue-800 transition-colors mr-4"
-						aria-label="Go back to Schedule an Appointment"
+						onClick={() => navigate(-1)}
+						className="text-[#00529C] hover:text-blue-800 border font-light cursor-pointer rounded-full transition-colors mr-4"
+						aria-label="Go back"
 					>
-						<ArrowLeft className="w-6 h-6" />
+						<ArrowLeft className="w-8 h-8" />
 					</button>
 					<h1 className="text-2xl font-semibold text-gray-800">
 						Schedule an Appointment — Imaging Visit
 					</h1>
 				</div>
 
-				{/* 5-Step Stepper Component */}
 				<ScheduleStepper currentStep={currentStep} steps={APPOINTMENT_STEPS} />
 
-				{/* Form Content Area (Step 1) */}
-				<div className="p-8 shadow-lg border-gray-100 min-h-[300px] flex flex-col justify-between">
-					<div>
-						<h2 className="text-xl font-bold text-gray-800 mb-6">
-							First, we need some information
-						</h2>
+				<div className="p-8 shadow-lg border-gray-100 min-h-[340px] flex flex-col justify-between">
+					{/* Step 1: initial question (Do you need more than one exam) */}
+					{currentStep === 1 && (
+						<div>
+							<h2 className="text-xl font-bold text-gray-800 mb-6">
+								First, we need some information
+							</h2>
+							<div className="flex justify-between items-center py-4 border-y border-gray-200">
+								<label className="text-lg text-gray-700">
+									Do you need to schedule more than one (1) exam?
+								</label>
+								<div className="flex space-x-2">
+									<Button
+										variant={
+											form.scheduleMoreThanOne === true ? "default" : "outline"
+										}
+										onClick={() => patch({ scheduleMoreThanOne: true })}
+										className={
+											form.scheduleMoreThanOne === true
+												? "bg-[#00529C] text-white"
+												: ""
+										}
+									>
+										Yes
+									</Button>
+									<Button
+										variant={
+											form.scheduleMoreThanOne === false ? "default" : "outline"
+										}
+										onClick={() => patch({ scheduleMoreThanOne: false })}
+										className={
+											form.scheduleMoreThanOne === false
+												? "bg-[#00529C] text-white"
+												: ""
+										}
+									>
+										No
+									</Button>
+								</div>
+							</div>
 
-						{/* Question and Yes/No Buttons */}
-						<div className="flex justify-between items-center py-4 border-y border-gray-200">
-							<label className="text-lg text-gray-700">
-								Do you need to schedule more than one (1) exam?
-							</label>
-							<div className="flex space-x-2">
+							<div className="mt-8 text-center">
 								<Button
-									variant={scheduleMoreThanOne === true ? "default" : "outline"}
-									onClick={() => setScheduleMoreThanOne(true)}
-									className={
-										scheduleMoreThanOne === true
-											? "bg-blue-800 hover:bg-blue-700 text-white"
-											: "text-gray-700 hover:bg-gray-100"
-									}
+									onClick={() => setCurrentStep(2)}
+									disabled={form.scheduleMoreThanOne === null}
+									className="bg-[#00529C] text-white px-8 py-3 rounded-lg"
 								>
-									Yes
-								</Button>
-								<Button
-									variant={
-										scheduleMoreThanOne === false ? "default" : "outline"
-									}
-									onClick={() => setScheduleMoreThanOne(false)}
-									className={
-										scheduleMoreThanOne === false
-											? "bg-blue-800 hover:bg-blue-700 text-white"
-											: "text-gray-700 hover:bg-gray-100"
-									}
-								>
-									No
+									Continue
 								</Button>
 							</div>
 						</div>
-					</div>
+					)}
 
-					{/* Continue Button (matches the screenshot styling) */}
-					<div className="mt-8 text-center">
-						<Button
-							onClick={handleContinue}
-							disabled={scheduleMoreThanOne === null}
-							className="
-                                bg-blue-500 
-                                hover:bg-blue-600 
-                                text-white 
-                                font-semibold 
-                                px-8 
-                                py-3 
-                                rounded-lg
-                                shadow-lg
-                                disabled:bg-gray-300
-                            "
-						>
-							Continue
-						</Button>
-					</div>
+					{currentStep === 2 && (
+						<QuestionnaireStep
+							form={form}
+							onChange={patch}
+							onNext={() => {
+								// ensure some default answers mapped
+								next();
+							}}
+						/>
+					)}
+
+					{currentStep === 3 && (
+						<LocationStep
+							form={form}
+							onChange={patch}
+							onNext={next}
+							onBack={back}
+						/>
+					)}
+
+					{currentStep === 4 && (
+						<TimeStep
+							form={form}
+							onChange={patch}
+							onNext={next}
+							onBack={back}
+						/>
+					)}
+
+					{currentStep === 5 && (
+						<VerifyStep
+							form={form}
+							onBack={back}
+							onSubmit={handleSubmit}
+							submitting={submitting}
+						/>
+					)}
 				</div>
 			</div>
+
+			<SuccessModal open={showSuccess} onClose={() => setShowSuccess(false)} />
 		</div>
 	);
 };

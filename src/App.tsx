@@ -14,11 +14,17 @@ import { useAuthStore } from "@/store/authStore";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { PortalNav } from "@/components/PortalNav";
-import { SkeletonPage } from "@/components/layout/SkeletonPage";
+import {
+	DashboardSkeleton,
+	SkeletonPage,
+} from "@/components/layout/SkeletonPage";
 import { Login } from "./features/auth/pages/LoginPage";
 import { Register } from "./features/auth/pages/RegisterPage";
 import { AuthSkeleton } from "@/features/skeletons/AuthSkeleton";
 import { UrgentCareView } from "./features/appointments/UrgentCareView";
+import { VisitDetailsView } from "./features/appointments/VisitDetailsView";
+import { MessageDetailView } from "./features/messages/MessageDetailView";
+import { BillingDetailsView } from "@/features/billing/BillingDetailsView";
 
 // --- LAZY-LOADED VIEWS (Optimization) ---
 
@@ -47,9 +53,9 @@ const MessagesView = lazy(() =>
 		default: module.MessagesView,
 	}))
 );
-const BillingView = lazy(() =>
-	import("@/features/billing/BillingView").then((module) => ({
-		default: module.BillingView,
+const BillingSummary = lazy(() =>
+	import("@/features/billing/BillingSummary").then((module) => ({
+		default: module.BillingSummary,
 	}))
 );
 const MedicationsView = lazy(() =>
@@ -129,7 +135,7 @@ const App: React.FC = () => {
 							isAuthenticated ? (
 								<Navigate to="/dashboard" replace />
 							) : (
-								<Suspense fallback={<AuthSkeleton />}>
+								<Suspense fallback={<SkeletonPage />}>
 									<Login />
 								</Suspense>
 							)
@@ -141,7 +147,7 @@ const App: React.FC = () => {
 							isAuthenticated ? (
 								<Navigate to="/dashboard" replace />
 							) : (
-								<Suspense fallback={<AuthSkeleton />}>
+								<Suspense fallback={<DashboardSkeleton />}>
 									<Register />
 								</Suspense>
 							)
@@ -204,6 +210,15 @@ const App: React.FC = () => {
 								}
 							/>
 							<Route
+								path="/visit-details/:visitId"
+								element={
+									<Suspense fallback={<SkeletonPage type="visits" />}>
+										<VisitDetailsView />
+									</Suspense>
+								}
+							/>
+
+							<Route
 								path="messages"
 								element={
 									<Suspense fallback={<SkeletonPage type="messages" />}>
@@ -212,10 +227,26 @@ const App: React.FC = () => {
 								}
 							/>
 							<Route
+								path="messages/:id"
+								element={
+									<Suspense fallback={<SkeletonPage type="messages" />}>
+										<MessageDetailView />
+									</Suspense>
+								}
+							/>
+							<Route
 								path="billing"
 								element={
 									<Suspense fallback={<SkeletonPage type="billing" />}>
-										<BillingView />
+										<BillingSummary />
+									</Suspense>
+								}
+							/>
+							<Route
+								path="billing/details"
+								element={
+									<Suspense fallback={<SkeletonPage type="billing" />}>
+										<BillingDetailsView />
 									</Suspense>
 								}
 							/>

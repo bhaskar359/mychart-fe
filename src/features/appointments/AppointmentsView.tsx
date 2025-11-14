@@ -43,7 +43,7 @@ export const AppointmentsView: React.FC = () => {
 									<Clock className="w-10 h-10 text-[#0085F2]" />
 								</div>
 								<div className="flex items-center text-xl font-medium text-gray-800">
-									Schedule an Imaging Visit
+									Schedule a Visit
 									<span className="ml-2 font-bold text-2xl">→</span>
 								</div>
 								<p className="text-xs text-muted-foreground mt-2 max-w-xs">
