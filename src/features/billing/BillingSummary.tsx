@@ -1,14 +1,25 @@
 // src/features/billing/BillingSummary.tsx
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useBilling } from "@/hooks/useBilling";
 import { ArrowLeft, Hospital, Printer } from "lucide-react";
 import { RightSidebar } from "./components/RightSidebar";
 import { HomePageButton } from "@/components/layout/HomePageButton";
+import { Button } from "@/components/ui/button";
+import { PaymentModal } from "./components/PaymentModel";
 
 export const BillingSummary: React.FC = () => {
-	const { data, loading } = useBilling();
+	const { data, loading, addPayment } = useBilling();
 	const accounts = data?.accounts ?? [];
+	const [showPaymentModal, setShowPaymentModal] = useState(false);
+	const handlePay = async (amount: number, method: string, note?: string) => {
+		addPayment("acct-1", {
+			accountId: "acct-1",
+			amount,
+			method,
+			note,
+		});
+	};
 
 	const totalDue = accounts.reduce((s, a) => s + a.amountDue, 0);
 
@@ -62,23 +73,36 @@ export const BillingSummary: React.FC = () => {
 								</div>
 
 								{/* Actions on the right */}
-								<div className="text-right flex flex-col items-end gap-3">
+								<div className="text-center flex flex-col items-end gap-3">
+									<Button
+										disabled={accounts[0].amountDue <= 0}
+										onClick={() => setShowPaymentModal(true)}
+									>
+										Pay Now
+									</Button>
 									<Link to="/billing/details" className="text-blue-700">
-										View Balance Details
+										Balance Details
 									</Link>
-									<button className="text-blue-700">
-										Contact Customer Service
-									</button>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 				<div className="grow lg:w-1/4 bg-[#F4F5F6] pl-10 flex rounded-l-4xl inset-shadow-[0px_4px_25px_3px_rgba(0,0,0,0.25)] p-6">
-					<RightSidebar />
+					<RightSidebar type="billSummary" />
 				</div>
 			</div>
 			<HomePageButton />
+			{showPaymentModal && (
+				<PaymentModal
+					account={accounts[0]}
+					onClose={() => setShowPaymentModal(false)}
+					onPay={async (amount, method, note) => {
+						await handlePay(amount, method, note);
+						setShowPaymentModal(false);
+					}}
+				/>
+			)}
 		</div>
 	);
 };

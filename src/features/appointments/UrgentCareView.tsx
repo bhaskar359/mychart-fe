@@ -126,8 +126,8 @@ export const UrgentCareView: React.FC = () => {
 	};
 
 	return (
-		<div className="mx-auto py-5">
-			<div className="mx-5">
+		<div className="mx-auto p-8">
+			<div>
 				<div className="flex items-center">
 					<button
 						onClick={() => navigate(-1)}
@@ -137,7 +137,8 @@ export const UrgentCareView: React.FC = () => {
 						<ArrowLeft className="w-8 h-8" />
 					</button>
 					<h1 className="text-2xl font-semibold text-[#003D72]">
-						Find Care Now
+						Schedule an Appointment —{" "}
+						<span className="font-normal">Find Care Now</span>
 					</h1>
 				</div>
 				<p className="text-sm mt-4 text-gray-600 mb-4">
@@ -148,7 +149,7 @@ export const UrgentCareView: React.FC = () => {
 				</p>
 			</div>
 
-			<div className="p-6 bg-[#F8F9FA] rounded-2xl">
+			<div className="p-6 bg-[#F8F8F8] rounded-2xl">
 				<div className="p-4 flex justify-between items-center space-y-4">
 					<h2 className="text-2xl font-semibold">Select Near by Location</h2>
 					<div className="flex flex-wrap justify-end items-center gap-3">

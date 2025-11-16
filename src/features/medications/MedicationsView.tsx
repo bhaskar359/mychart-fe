@@ -1,6 +1,6 @@
 // src/features/medications/MedicationsView.tsx
 
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -19,9 +19,22 @@ import Allergy from "@/assets/Allergy.svg";
 import Immuninization from "@/assets/Immunization.svg";
 import PreventiveCare from "@/assets/Preventive Care.svg";
 import { HomePageButton } from "@/components/layout/HomePageButton";
+import { RequestRefillsModal } from "./components/RequestRefillsModal";
 
 export const MedicationsView: React.FC = () => {
-	const { medications, isLoading, isError, error } = useMedications();
+	const { medications, isLoading, isError, error, getRefilledFromStorage } =
+		useMedications();
+	const [open, setOpen] = useState(false);
+	const [refresh, setRefresh] = useState(false);
+
+	const requested = getRefilledFromStorage();
+	const allRequested = medications
+		.filter((m) => m.status === "Active")
+		.every((m) => requested.includes(m.id.toString()));
+
+	const handleSuccess = () => {
+		setRefresh((x) => !x); // force re-render
+	};
 
 	if (isLoading) {
 		return <MedicationsSkeleton />;
@@ -55,6 +68,8 @@ export const MedicationsView: React.FC = () => {
 						</h1>
 						<div className="flex gap-4">
 							<Button
+								disabled={allRequested}
+								onClick={() => setOpen(true)}
 								variant="outline"
 								className="flex items-center rounded-xl justify-center gap-2 border border-[#B9D1F1] text-[#2563EB] bg-[#EAF2FF] hover:rounded-2xl px-3 py-5 text-sm font-light shadow-sm transition-all"
 							>
@@ -173,6 +188,12 @@ export const MedicationsView: React.FC = () => {
 				</Card>
 			</div>
 			<HomePageButton />
+			<RequestRefillsModal
+				open={open}
+				onClose={() => setOpen(false)}
+				medications={medications}
+				onSuccess={handleSuccess}
+			/>
 		</div>
 	);
 };

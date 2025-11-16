@@ -1,7 +1,7 @@
 // src/components/layout/Header.tsx
 
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { LogOut, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export const Header: React.FC = () => {
+	const navigate = useNavigate();
 	// ⬇️ Use state and actions from the global store
 	const { user, isAuthenticated, logout } = useAuthStore();
 
@@ -81,7 +82,10 @@ export const Header: React.FC = () => {
 									</div>
 								</DropdownMenuLabel>
 								<DropdownMenuSeparator />
-								<DropdownMenuItem>
+								<DropdownMenuItem
+									className="cursor-pointer"
+									onClick={() => navigate("/profile")}
+								>
 									<User className="mr-2 h-4 w-4" />
 									<span>Profile</span>
 								</DropdownMenuItem>

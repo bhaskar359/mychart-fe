@@ -10,21 +10,55 @@ import type { ImagingFormState } from "../types";
 const MOCK_LOCATIONS = [
 	{
 		id: "loc-1",
-		name: "TGHI Bayonet Point",
-		address: "7525 State Road 52, Bayonet Point FL 34667-6717",
+		name: "USF Health Morsani Center",
+		address: "13330 USF Laurel Drive, Tampa FL 33612",
 	},
 	{
 		id: "loc-2",
-		name: "TGHI Bloomingdale",
-		address: "3069 Grand Pavilion Drive, Tampa FL 33613-3757",
+		name: "USF Student Health Services",
+		address: "4202 E Fowler Avenue, Tampa FL 33620",
 	},
 	{
 		id: "loc-3",
-		name: "TGHI Carrollwood",
-		address: "123 Carrollwood Ave, Tampa FL 33618",
+		name: "TGH Health Medical Center – Carrollwood",
+		address: "4106 W Lakeview Drive, Tampa FL 33614",
+	},
+	{
+		id: "loc-4",
+		name: "Tampa General Hospital Family Care Center – Healthpark",
+		address: "5802 N 30th Street, Tampa FL 33610",
+	},
+	{
+		id: "loc-5",
+		name: "TGH Family Care Center – Kennedy",
+		address: "2501 W Kennedy Blvd, Tampa FL 33609",
+	},
+	{
+		id: "loc-6",
+		name: "AdventHealth Tampa",
+		address: "3100 E Fletcher Avenue, Tampa FL 33613",
+	},
+	{
+		id: "loc-7",
+		name: "AdventHealth Carrollwood",
+		address: "7171 N Dale Mabry Hwy, Tampa FL 33614",
+	},
+	{
+		id: "loc-8",
+		name: "BayCare St. Joseph’s Hospital",
+		address: "3001 W Dr Martin Luther King Jr Blvd, Tampa FL 33607",
+	},
+	{
+		id: "loc-9",
+		name: "BayCare Wesley Chapel Hospital",
+		address: "2600 Bruce B Downs Blvd, Wesley Chapel FL 33544",
+	},
+	{
+		id: "loc-10",
+		name: "Moffitt Cancer Center – Magnolia Campus",
+		address: "12902 USF Magnolia Drive, Tampa FL 33612",
 	},
 ];
-
 interface Props {
 	form: ImagingFormState;
 	onChange: (patch: Partial<ImagingFormState>) => void;
@@ -39,9 +73,9 @@ export const LocationStep: React.FC<Props> = ({
 	onBack,
 }) => {
 	return (
-		<Card className="p-8 min-h-[320px]">
-			<h2 className="text-xl font-bold text-[#003D72] mb-4">
-				Which locations work for you?
+		<div className="min-h-[320px]">
+			<h2 className="text-xl borber-b border-gray-400 text-[#003D72] mb-4">
+				First, we need some information
 			</h2>
 
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -85,6 +119,6 @@ export const LocationStep: React.FC<Props> = ({
 					Continue
 				</Button>
 			</div>
-		</Card>
+		</div>
 	);
 };

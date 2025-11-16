@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 export const useBookmarks = () => {
 	const [bookmarks, setBookmarks] = useState<string[]>(() => {
 		try {
-			const stored = localStorage.getItem("msgBookmarks");
+			const stored = sessionStorage.getItem("msgBookmarks");
 			return stored ? JSON.parse(stored) : [];
 		} catch {
 			return [];
@@ -12,7 +12,23 @@ export const useBookmarks = () => {
 	});
 
 	useEffect(() => {
-		localStorage.setItem("msgBookmarks", JSON.stringify(bookmarks));
+		const stored = sessionStorage.getItem("msgBookmarks");
+		if (stored) setBookmarks(JSON.parse(stored));
+	}, []);
+
+	// Listen for changes (from this tab)
+	useEffect(() => {
+		const handler = () => {
+			const stored = sessionStorage.getItem("msgBookmarks");
+			if (stored) setBookmarks(JSON.parse(stored));
+		};
+		window.addEventListener("storage", handler);
+		return () => window.removeEventListener("storage", handler);
+	}, []);
+
+	// Save changes
+	useEffect(() => {
+		sessionStorage.setItem("msgBookmarks", JSON.stringify(bookmarks));
 	}, [bookmarks]);
 
 	const toggleBookmark = (id: string) => {

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 export const useArchive = () => {
 	const [archived, setArchived] = useState<string[]>(() => {
 		try {
-			const stored = localStorage.getItem("msgArchive");
+			const stored = sessionStorage.getItem("msgArchive");
 			return stored ? JSON.parse(stored) : [];
 		} catch {
 			return [];
@@ -12,7 +12,7 @@ export const useArchive = () => {
 	});
 
 	useEffect(() => {
-		localStorage.setItem("msgArchive", JSON.stringify(archived));
+		sessionStorage.setItem("msgArchive", JSON.stringify(archived));
 	}, [archived]);
 
 	const toggleArchive = (id: string) => {

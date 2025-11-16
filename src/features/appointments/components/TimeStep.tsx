@@ -1,11 +1,19 @@
 // src/features/appointments/components/TimeStep.tsx
+
 import React from "react";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import type { ImagingFormState } from "../types";
+import type { ImagingFormState } from "../types/";
+import { format } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
 
 /**
- * Simple mock of available times per date. Replace with real availability API.
+ * Mock available times. Replace with real API later.
  */
 const MOCK_TIMES = ["07:30", "08:30", "09:30", "10:30"];
 
@@ -22,31 +30,71 @@ export const TimeStep: React.FC<Props> = ({
 	onNext,
 	onBack,
 }) => {
-	const today = new Date().toISOString().slice(0, 10);
+	// Today at midnight
+	const today = new Date();
+	today.setHours(0, 0, 0, 0);
+
+	// Convert stored YYYY-MM-DD → Date
+	const selectedDate = form.appointmentDate
+		? new Date(form.appointmentDate + "T00:00:00")
+		: undefined;
+
+	// Convert JS Date → YYYY-MM-DD in LOCAL TIME (Fix timezone bug)
+	const toLocalISO = (date: Date) => date.toLocaleDateString("en-CA"); // YYYY-MM-DD
 
 	return (
-		<Card className="p-8 min-h-[320px]">
-			<h2 className="text-xl font-bold text-[#003D72] mb-4">
-				What time works for you?
-			</h2>
+		<div className="min-h-[320px]">
+			<h2 className="text-xl text-[#003D72] mb-4">What time works for you?</h2>
 
 			<div className="space-y-4">
-				<label className="text-sm text-gray-700">Select appointment date</label>
-				<input
-					type="date"
-					value={form.appointmentDate || today}
-					min={today}
-					onChange={(e) => onChange({ appointmentDate: e.target.value })}
-					className="rounded border px-3 py-2"
-				/>
+				<label className="text-lg text-gray-700 block mb-2">
+					Select appointment date
+				</label>
 
+				{/* DATE PICKER USING SHADCN CALENDAR */}
+				<Popover>
+					<PopoverTrigger asChild>
+						<button className="w-[240px] flex items-center justify-between px-3 py-2 border rounded-md bg-white text-left">
+							{selectedDate ? (
+								<span>{format(selectedDate, "PPP")}</span>
+							) : (
+								<span className="text-gray-500">Pick a date</span>
+							)}
+							<CalendarIcon className="h-4 w-4 opacity-60" />
+						</button>
+					</PopoverTrigger>
+
+					<PopoverContent className="p-0">
+						<Calendar
+							mode="single"
+							selected={selectedDate}
+							onSelect={(date) => {
+								if (!date) return;
+
+								// FIX: Save date in LOCAL YYYY-MM-DD format
+								const isoLocal = toLocalISO(date);
+								onChange({ appointmentDate: isoLocal });
+							}}
+							disabled={(date) => {
+								const d = new Date(date);
+								d.setHours(0, 0, 0, 0);
+								return d <= today; // Disable today + past
+							}}
+							initialFocus
+						/>
+					</PopoverContent>
+				</Popover>
+
+				{/* SELECT TIME */}
 				<div>
-					<label className="text-sm text-gray-700 block mb-2">
-						Available times
+					<label className="text-lg text-gray-700 block mb-2">
+						Available Slots
 					</label>
+
 					<div className="flex gap-3 flex-wrap">
 						{MOCK_TIMES.map((t) => {
 							const selected = form.appointmentTime === t;
+
 							return (
 								<button
 									key={t}
@@ -65,6 +113,7 @@ export const TimeStep: React.FC<Props> = ({
 				</div>
 			</div>
 
+			{/* ACTION BUTTONS */}
 			<div className="mt-8 flex justify-between">
 				<Button variant="outline" onClick={onBack}>
 					Back
@@ -78,6 +127,6 @@ export const TimeStep: React.FC<Props> = ({
 					Continue
 				</Button>
 			</div>
-		</Card>
+		</div>
 	);
 };

@@ -60,7 +60,7 @@ export const Overview: React.FC<Props> = ({
 								</button>
 								<button
 									onClick={() => onOpenPayments(acc.id)}
-									className="px-4 py-2 bg-blue-700 text-white rounded"
+									className="px-4 py-2 bg-[#00529C] text-white rounded"
 								>
 									Payments
 								</button>

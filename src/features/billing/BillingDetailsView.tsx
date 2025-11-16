@@ -8,12 +8,13 @@ import { DocumentsView } from "./components/Documents";
 import { RightSidebar } from "./components/RightSidebar";
 import { PaymentModal } from "./components/PaymentModel";
 import { ArrowLeft } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const TABS = ["Overview", "Details", "Payments", "Documents"] as const;
 type Tab = (typeof TABS)[number];
 
 export const BillingDetailsView: React.FC = () => {
+	const navigate = useNavigate();
 	const { data, loading, addPayment, resetToDemo } = useBilling();
 	const accounts = data?.accounts ?? [];
 
@@ -61,16 +62,20 @@ export const BillingDetailsView: React.FC = () => {
 	if (loading) return <div className="p-6">Loading...</div>;
 
 	return (
-		<div className="mx-auto px-8 py-8">
-			<div className="flex items-start gap-6">
-				<div className="flex-1">
-					<div className="flex items-center gap-4 mb-4">
-						<Link to="/billing" className="flex items-center text-blue-700">
-							<ArrowLeft className="mr-2" /> Back to Summary
-						</Link>
-						<h1 className="text-3xl font-semibold ml-6">
+		<div className="mx-auto py-8">
+			<div className="flex flex-col lg:flex-row gap-6">
+				<div className="grow lg:w-3/4 bg-[#F4F5F6] pl-10 rounded-r-4xl inset-shadow-[0px_4px_25px_3px_rgba(0,0,0,0.25)] p-6">
+					<div className="flex items-center">
+						<button
+							onClick={() => navigate(-1)}
+							className="text-[#00529C] hover:text-blue-800 border font-light cursor-pointer rounded-full transition-colors mr-4"
+							aria-label="Go back to Schedule an Appointment"
+						>
+							<ArrowLeft className="w-8 h-8" />
+						</button>
+						<h1 className="text-2xl font-semibold text-[#003D72]">
 							Billing Summary -{" "}
-							<span className="text-blue-700">View Balance Details</span>
+							<span className="font-normal">View Balance Details</span>
 						</h1>
 					</div>
 
@@ -82,7 +87,7 @@ export const BillingDetailsView: React.FC = () => {
 									onClick={() => setActiveTab(t)}
 									className={`px-4 py-2 rounded-full border ${
 										activeTab === t
-											? "bg-blue-700 text-white border-blue-700"
+											? "bg-[#00529C] text-white"
 											: "bg-white text-gray-700"
 									}`}
 								>
@@ -118,7 +123,9 @@ export const BillingDetailsView: React.FC = () => {
 					</div>
 				</div>
 
-				<RightSidebar />
+				<div className="grow lg:w-1/4 bg-[#F4F5F6] pl-10 flex rounded-l-4xl inset-shadow-[0px_4px_25px_3px_rgba(0,0,0,0.25)] p-6">
+					<RightSidebar type="billDetails" />
+				</div>
 			</div>
 
 			{showPaymentModal && selectedAccount && (
@@ -132,18 +139,6 @@ export const BillingDetailsView: React.FC = () => {
 					}}
 				/>
 			)}
-
-			<div className="mt-8">
-				<button
-					onClick={() => resetToDemo()}
-					className="px-3 py-2 border rounded text-sm mr-3"
-				>
-					Reset demo data
-				</button>
-				<span className="text-sm text-gray-500 ml-2">
-					Local demo stored in localStorage.
-				</span>
-			</div>
 		</div>
 	);
 };

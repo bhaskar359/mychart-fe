@@ -26,6 +26,35 @@ export const useMedications = () => {
 	const userId = useAuthStore((state) => state.user?.id);
 	const token = localStorage.getItem("authToken");
 
+	const REFILL_KEY = "refilledMedications";
+
+	const getRefilledFromStorage = (): string[] => {
+		try {
+			return JSON.parse(sessionStorage.getItem(REFILL_KEY) || "[]");
+		} catch {
+			return [];
+		}
+	};
+
+	const saveRefilledToStorage = (ids: string[]) => {
+		sessionStorage.setItem(REFILL_KEY, JSON.stringify(ids));
+	};
+
+	const refilled = getRefilledFromStorage();
+
+	const markRefilled = (id: string) => {
+		const updated = [...new Set([...refilled, id])];
+		saveRefilledToStorage(updated);
+	};
+
+	const isRefilled = (id: string) => refilled.includes(id);
+
+	const requestMultipleRefills = (ids: string[]) => {
+		const current = getRefilledFromStorage();
+		const updated = Array.from(new Set([...current, ...ids]));
+		saveRefilledToStorage(updated);
+	};
+
 	const { data, isLoading, isError, error } = useQuery<Medication[], Error>({
 		queryKey: ["medications", userId],
 
@@ -54,5 +83,9 @@ export const useMedications = () => {
 		isLoading,
 		isError,
 		error,
+		isRefilled,
+		markRefilled,
+		getRefilledFromStorage,
+		requestMultipleRefills,
 	};
 };

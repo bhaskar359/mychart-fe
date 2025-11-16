@@ -20,7 +20,17 @@ export interface Appointment {
 	id: string; // UUID
 	user_id: string;
 	physician_id: string;
-	appointment_type: "Office Visit" | "Telehealth" | "Imaging" | "Lab";
+	appointment_type:
+		| "Bone Density or DEXA"
+		| "CT or CTA"
+		| "Mammography"
+		| "MRI or MRA"
+		| "Ultrasound or Sonogram"
+		| "Fluoroscopy"
+		| "Nuclear Medicine"
+		| "Biopsy"
+		| "PET Scan"
+		| "XRAY";
 	reason_for_visit: string;
 
 	// Dates and Times (Note: appointment_date is converted to Date object in the hook)

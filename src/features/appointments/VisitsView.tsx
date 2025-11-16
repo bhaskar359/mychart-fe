@@ -1,5 +1,3 @@
-// src/features/appointments/VisitsView.tsx
-
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -21,9 +19,7 @@ export const VisitsView: React.FC = () => {
 		refetch,
 	} = useAppointments();
 
-	// I want to fetch the appointements data whenever navigated to other and come back
 	useEffect(() => {
-		// Only run refetch if the function is available
 		if (refetch) {
 			refetch();
 		}
@@ -77,9 +73,7 @@ export const VisitsView: React.FC = () => {
 	return (
 		<div className="mx-auto py-10">
 			<div className="flex flex-col lg:flex-row gap-8">
-				{/* 1. Main Content Column */}
 				<div className="grow lg:w-3/4 bg-[#F4F5F6] pl-10 rounded-r-4xl inset-shadow-[0px_4px_25px_3px_rgba(0,0,0,0.25)] p-6">
-					{/* Header and Schedule Button */}
 					<div className="flex justify-between items-center mb-6">
 						<h1 className="text-3xl font-bold text-[#003D72]">
 							Appointments and Visits
@@ -91,7 +85,6 @@ export const VisitsView: React.FC = () => {
 						</Link>
 					</div>
 
-					{/* Upcoming Visits Section */}
 					<h2 className="text-xl font-semibold text-[#003D72] mt-8 mb-4">
 						Upcoming Visits
 					</h2>
@@ -126,28 +119,9 @@ export const VisitsView: React.FC = () => {
 						</Card>
 					)}
 
-					{/* Past Visits Section */}
 					<h2 className="text-xl font-semibold text-gray-800 mt-8 mb-4">
 						Past Visits
 					</h2>
-
-					{/* Past Visit Cards */}
-					{/* {pastVisits.map((visit, index) => (
-						<div key={index} className="flex items-start gap-4 mb-6">
-							<div className="relative flex flex-col items-center">
-								<div className="w-2 h-2 bg-[#0085F2] rounded-full"></div>
-
-								<div className="w-0.5 bg-[#0085F2] h-[110px]"></div>
-							</div>
-
-							<div className="flex flex-col">
-								<p className="text-[#0085F2] text-sm font-medium mb-1">
-									{index === 0 ? "3 Months ago" : "4 Months ago"}
-								</p>
-								<VisitCard {...visit} />
-							</div>
-						</div>
-					))} */}
 					{past.length > 0 ? (
 						<div className="space-y-4">
 							{Object.entries(groupedPast).map(([month, visits]) => (
@@ -186,15 +160,19 @@ export const VisitsView: React.FC = () => {
 					)}
 				</div>
 
-				{/* 3. Sidebar Column (Related Links) */}
 				<div className="grow lg:w-1/4 bg-[#F4F5F6] rounded-l-4xl inset-shadow-[0px_4px_25px_3px_rgba(0,0,0,0.25)] p-6">
 					<h3 className="text-lg font-bold text-[#003D72] mb-4">
 						Related Links
 					</h3>
 					<ul className="space-y-3 text-sm text-[#00529C] ">
-						<li className="hover:underline flex cursor-pointer">
-							<BookText size={18} className="pr-1" />
-							Document Center
+						<li>
+							<Link
+								to="/visit-details/0d1e2f3a-pst2-3f2a-a3b4-8c5678901234?tab=notes"
+								className="hover:underline flex cursor-pointer"
+							>
+								<BookText size={18} className="pr-1" />
+								Document Center
+							</Link>
 						</li>
 					</ul>
 				</div>

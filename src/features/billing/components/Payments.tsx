@@ -1,6 +1,8 @@
 // src/features/billing/components/Payments.tsx
 import React from "react";
 import type { BillingAccount } from "@/hooks/useBilling";
+import { formatDate } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 type Props = {
 	account?: BillingAccount;
@@ -29,12 +31,13 @@ export const PaymentsView: React.FC<Props> = ({ account, onOpenPay }) => {
 						${account.amountDue.toFixed(2)}
 					</p>
 					<div className="mt-3">
-						<button
+						<Button
+							disabled={account.amountDue <= 0}
 							onClick={() => onOpenPay(account.id)}
-							className="px-4 py-2 bg-blue-700 text-white rounded"
+							className="px-4 py-2 bg-[#00529C] text-white rounded"
 						>
 							Make Payment
-						</button>
+						</Button>
 					</div>
 				</div>
 			</div>
@@ -52,13 +55,13 @@ export const PaymentsView: React.FC<Props> = ({ account, onOpenPay }) => {
 								className="flex justify-between items-center border-b pb-3"
 							>
 								<div>
-									<div className="font-semibold">${p.amount.toFixed(2)}</div>
-									<div className="text-sm text-gray-600">
-										{new Date(p.date).toLocaleString()}
+									<div className="font-semibold">
+										Paid ${p.amount.toFixed(2)}
 									</div>
-									<div className="text-sm text-gray-600">{p.method}</div>
+									<div className="text-sm text-gray-600">
+										on {formatDate(p.date)}
+									</div>
 								</div>
-								<div className="text-sm text-gray-600">{p.note}</div>
 							</li>
 						))}
 					</ul>

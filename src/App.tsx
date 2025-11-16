@@ -25,6 +25,9 @@ import { UrgentCareView } from "./features/appointments/UrgentCareView";
 import { VisitDetailsView } from "./features/appointments/VisitDetailsView";
 import { MessageDetailView } from "./features/messages/MessageDetailView";
 import { BillingDetailsView } from "@/features/billing/BillingDetailsView";
+// import { MessageActionsProvider } from "./context/MessageActionsContext";
+import { MessageActionsProvider } from "@/context/MessageActionsProvider";
+import { ProfilePage } from "./components/layout/ProfilePage";
 
 // --- LAZY-LOADED VIEWS (Optimization) ---
 
@@ -167,6 +170,14 @@ const App: React.FC = () => {
 					>
 						{/* Dashboard Route (Root of the authenticated section) */}
 						<Route
+							path="profile"
+							element={
+								<Suspense fallback={<SkeletonPage type="dashboard" />}>
+									<ProfilePage />
+								</Suspense>
+							}
+						/>
+						<Route
 							path="dashboard"
 							element={
 								<Suspense fallback={<SkeletonPage type="dashboard" />}>
@@ -217,23 +228,28 @@ const App: React.FC = () => {
 									</Suspense>
 								}
 							/>
-
 							<Route
 								path="messages"
 								element={
-									<Suspense fallback={<SkeletonPage type="messages" />}>
-										<MessagesView />
-									</Suspense>
+									<MessageActionsProvider>
+										<Suspense fallback={<SkeletonPage type="messages" />}>
+											<MessagesView />
+										</Suspense>
+									</MessageActionsProvider>
 								}
 							/>
+
 							<Route
 								path="messages/:id"
 								element={
-									<Suspense fallback={<SkeletonPage type="messages" />}>
-										<MessageDetailView />
-									</Suspense>
+									<MessageActionsProvider>
+										<Suspense fallback={<SkeletonPage type="messages" />}>
+											<MessageDetailView />
+										</Suspense>
+									</MessageActionsProvider>
 								}
 							/>
+
 							<Route
 								path="billing"
 								element={

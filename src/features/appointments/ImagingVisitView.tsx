@@ -58,7 +58,7 @@ export const ImagingVisitView: React.FC = () => {
 		setSubmitting(true);
 
 		const payload: CreateAppointmentPayload = {
-			appointment_type: "Imaging", // Required
+			appointment_type: form.appointmentType,
 			reason_for_visit: "Patient scheduled imaging visit",
 
 			appointment_date: form.appointmentDate, // YYYY-MM-DD
@@ -127,8 +127,8 @@ export const ImagingVisitView: React.FC = () => {
 	};
 
 	return (
-		<div className="p-6 md:p-10 lg:p-12 bg-white flex-grow">
-			<div className="mx-auto max-w-6xl">
+		<div className="p-6 grow">
+			<div className="mx-auto">
 				<div className="flex items-center mb-6">
 					<button
 						onClick={() => navigate(-1)}
@@ -137,103 +137,114 @@ export const ImagingVisitView: React.FC = () => {
 					>
 						<ArrowLeft className="w-8 h-8" />
 					</button>
-					<h1 className="text-2xl font-semibold text-gray-800">
-						Schedule an Appointment — Imaging Visit
+					<h1 className="text-2xl font-semibold text-[#003D72]">
+						Schedule an Appointment —{" "}
+						<span className="font-normal">Imaging Visit</span>
 					</h1>
 				</div>
 
-				<ScheduleStepper currentStep={currentStep} steps={APPOINTMENT_STEPS} />
+				<div className="bg-[#F8F8F8] p-6 rounded-2xl">
+					<ScheduleStepper
+						currentStep={currentStep}
+						steps={APPOINTMENT_STEPS}
+					/>
 
-				<div className="p-8 shadow-lg border-gray-100 min-h-[340px] flex flex-col justify-between">
-					{/* Step 1: initial question (Do you need more than one exam) */}
-					{currentStep === 1 && (
-						<div>
-							<h2 className="text-xl font-bold text-gray-800 mb-6">
-								First, we need some information
-							</h2>
-							<div className="flex justify-between items-center py-4 border-y border-gray-200">
-								<label className="text-lg text-gray-700">
-									Do you need to schedule more than one (1) exam?
-								</label>
-								<div className="flex space-x-2">
+					<div className="min-h-[340px] flex flex-col justify-between">
+						{/* Step 1: initial question (Do you need more than one exam) */}
+						{currentStep === 1 && (
+							<div>
+								<h2 className="text-xl text-[#003D72] mb-6">
+									First, we need some information
+								</h2>
+								<div className="flex justify-between items-center py-4 border-y border-gray-200">
+									<label className="text-gray-700">
+										Do you need to schedule more than one (1) exam?
+									</label>
+									<div className="flex space-x-2">
+										<Button
+											variant={
+												form.scheduleMoreThanOne === true
+													? "default"
+													: "outline"
+											}
+											onClick={() => patch({ scheduleMoreThanOne: true })}
+											className={
+												form.scheduleMoreThanOne === true
+													? "bg-[#00529C] text-white"
+													: ""
+											}
+										>
+											Yes
+										</Button>
+										<Button
+											variant={
+												form.scheduleMoreThanOne === false
+													? "default"
+													: "outline"
+											}
+											onClick={() => patch({ scheduleMoreThanOne: false })}
+											className={
+												form.scheduleMoreThanOne === false
+													? "bg-[#00529C] text-white"
+													: ""
+											}
+										>
+											No
+										</Button>
+									</div>
+								</div>
+
+								<div className="mt-8 text-center">
 									<Button
-										variant={
-											form.scheduleMoreThanOne === true ? "default" : "outline"
-										}
-										onClick={() => patch({ scheduleMoreThanOne: true })}
-										className={
-											form.scheduleMoreThanOne === true
-												? "bg-[#00529C] text-white"
-												: ""
-										}
+										onClick={() => setCurrentStep(2)}
+										disabled={form.scheduleMoreThanOne === null}
+										className="bg-[#00529C] text-white px-8 py-3 rounded-lg"
 									>
-										Yes
-									</Button>
-									<Button
-										variant={
-											form.scheduleMoreThanOne === false ? "default" : "outline"
-										}
-										onClick={() => patch({ scheduleMoreThanOne: false })}
-										className={
-											form.scheduleMoreThanOne === false
-												? "bg-[#00529C] text-white"
-												: ""
-										}
-									>
-										No
+										Continue
 									</Button>
 								</div>
 							</div>
+						)}
 
-							<div className="mt-8 text-center">
-								<Button
-									onClick={() => setCurrentStep(2)}
-									disabled={form.scheduleMoreThanOne === null}
-									className="bg-[#00529C] text-white px-8 py-3 rounded-lg"
-								>
-									Continue
-								</Button>
-							</div>
-						</div>
-					)}
+						{currentStep === 2 && (
+							<QuestionnaireStep
+								form={form}
+								onChange={patch}
+								onBack={back}
+								onNext={() => {
+									// ensure some default answers mapped
+									next();
+								}}
+							/>
+						)}
 
-					{currentStep === 2 && (
-						<QuestionnaireStep
-							form={form}
-							onChange={patch}
-							onNext={() => {
-								// ensure some default answers mapped
-								next();
-							}}
-						/>
-					)}
+						{currentStep === 3 && (
+							<LocationStep
+								form={form}
+								onChange={patch}
+								onNext={next}
+								onBack={back}
+							/>
+						)}
 
-					{currentStep === 3 && (
-						<LocationStep
-							form={form}
-							onChange={patch}
-							onNext={next}
-							onBack={back}
-						/>
-					)}
+						{currentStep === 4 && (
+							<TimeStep
+								form={form}
+								onChange={patch}
+								onNext={next}
+								onBack={back}
+							/>
+						)}
 
-					{currentStep === 4 && (
-						<TimeStep
-							form={form}
-							onChange={patch}
-							onNext={next}
-							onBack={back}
-						/>
-					)}
-
-					{currentStep === 5 && (
-						<VerifyStep
-							form={form}
-							onBack={back}
-							onSubmit={handleSubmit}
-							submitting={submitting}
-						/>
-					)}
+						{currentStep === 5 && (
+							<VerifyStep
+								form={form}
+								onBack={back}
+								onSubmit={handleSubmit}
+								submitting={submitting}
+							/>
+						)}
+					</div>
 				</div>
 			</div>
 

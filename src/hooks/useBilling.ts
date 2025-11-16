@@ -40,27 +40,13 @@ function demoData(): BillingData {
 				providerName: "USF Student Health Services",
 				guarantor: "Yaswanth Bellamkonda (Guarantor #4180031)",
 				date: "28th April, 2025",
-				billed: 177.0,
-				insuranceCovered: 0.0,
-				discounted: -177.0,
+				billed: 177.25,
+				insuranceCovered: 127.0,
+				discounted: 0.0,
 				amountDue: 50.25, // show some non-zero due for demonstration
 				status: "Open",
 				details:
 					"Office visit at USF Student Health Services and Wellness Center. Provider: Nurse Ronisha, RN. Primary payer: Aetna.",
-				payments: [],
-			},
-			{
-				id: "acct-2",
-				providerName: "Tampa General Hospital",
-				guarantor: "Yaswanth Bellamkonda (Guarantor #4180031)",
-				date: "10th March, 2025",
-				billed: 320.0,
-				insuranceCovered: 100.0,
-				discounted: -120.0,
-				amountDue: 100.0,
-				status: "Closed",
-				details:
-					"Radiology Services. Provider: Radiology Dept. Primary payer: BlueCross.",
 				payments: [],
 			},
 		],
@@ -73,7 +59,7 @@ export const useBilling = () => {
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		const stored = localStorage.getItem(STORAGE_KEY);
+		const stored = sessionStorage.getItem(STORAGE_KEY);
 		if (stored) {
 			try {
 				const parsed = JSON.parse(stored) as BillingData;
@@ -81,12 +67,12 @@ export const useBilling = () => {
 			} catch (err) {
 				// corrupt data fallback
 				const demo = demoData();
-				localStorage.setItem(STORAGE_KEY, JSON.stringify(demo));
+				sessionStorage.setItem(STORAGE_KEY, JSON.stringify(demo));
 				setData(demo);
 			}
 		} else {
 			const demo = demoData();
-			localStorage.setItem(STORAGE_KEY, JSON.stringify(demo));
+			sessionStorage.setItem(STORAGE_KEY, JSON.stringify(demo));
 			setData(demo);
 		}
 		setLoading(false);
@@ -94,7 +80,7 @@ export const useBilling = () => {
 
 	useEffect(() => {
 		if (data) {
-			localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+			sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 		}
 	}, [data]);
 
@@ -149,7 +135,7 @@ export const useBilling = () => {
 	const resetToDemo = () => {
 		const demo = demoData();
 		setData(demo);
-		localStorage.setItem(STORAGE_KEY, JSON.stringify(demo));
+		sessionStorage.setItem(STORAGE_KEY, JSON.stringify(demo));
 	};
 
 	return {

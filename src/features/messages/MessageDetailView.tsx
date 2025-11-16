@@ -1,11 +1,13 @@
 import React from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useMessages } from "@/hooks/useMessages";
 import { useBookmarks } from "@/hooks/useBookmarks";
 import { useArchive } from "@/hooks/useArchive";
 import { Bookmark, Archive, ArrowLeft, User } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export const MessageDetailView = () => {
+	const navigate = useNavigate();
 	const { id } = useParams();
 	const { messages } = useMessages();
 	const { bookmarks, toggleBookmark } = useBookmarks();
@@ -20,11 +22,30 @@ export const MessageDetailView = () => {
 	const isBookmarked = bookmarks.includes(msg.id);
 	const isArchived = archived.includes(msg.id);
 
+	if (id?.startsWith("conv-")) {
+		return (
+			<div className="p-8 max-w-3xl mx-auto">
+				<Button variant="outline" onClick={() => navigate(-1)} className="mb-4">
+					← Back
+				</Button>
+
+				<h1 className="text-2xl font-bold text-blue-900 mb-2">
+					Conversation Message
+				</h1>
+
+				<p className="text-gray-700 leading-6 whitespace-pre-line mt-4">
+					This is a sample conversation message opened in detail view. You can
+					replace this content later with real conversation data.
+				</p>
+			</div>
+		);
+	}
+
 	return (
-		<div className="bg-[#F4F5F6] min-h-screen py-6">
-			<div className="bg-white mx-auto w-11/12 rounded-lg shadow p-6 border">
+		<div className="mx-auto py-6">
+			<div className="grow bg-[#F4F5F6] pl-10 rounded-r-4xl inset-shadow-[0px_4px_25px_3px_rgba(0,0,0,0.25)] p-6">
 				{/* HEADER */}
-				<div className="flex justify-between items-center border-b pb-4 mb-4 bg-[#E8F1FB] rounded-t-lg px-4 py-3">
+				<div className="flex justify-between items-center border-0 pb-4 mb-4 bg-[#e1edfb] rounded-t-lg border-b px-4 py-3">
 					<div>
 						<Link to="/messages" className="flex items-center text-blue-700">
 							<ArrowLeft className="mr-2" /> Back to Messages
@@ -63,7 +84,7 @@ export const MessageDetailView = () => {
 					<div className="w-3/4 space-y-4">
 						<p className="text-gray-500">{msg.date}</p>
 
-						<div className="bg-white border p-6 rounded-xl shadow w-3/4">
+						<div className="bg-white p-6 rounded-xl shadow w-3/4">
 							{msg.type === "appointment" && (
 								<div className="space-y-1">
 									<p className="font-semibold">Appointment Information</p>

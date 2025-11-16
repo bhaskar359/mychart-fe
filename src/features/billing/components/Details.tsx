@@ -27,14 +27,14 @@ export const DetailsView: React.FC<Props> = ({ account, onPay }) => {
 						<p className="text-2xl font-bold text-green-700">
 							${account.amountDue.toFixed(2)}
 						</p>
-						<div className="mt-3">
+						{/* <div className="mt-3">
 							<button
 								onClick={() => onPay(account.id)}
-								className="px-4 py-2 bg-blue-700 text-white rounded"
+								className="px-4 py-2 bg-[#00529C] text-white rounded"
 							>
 								Pay Now
 							</button>
-						</div>
+						</div> */}
 					</div>
 				</div>
 

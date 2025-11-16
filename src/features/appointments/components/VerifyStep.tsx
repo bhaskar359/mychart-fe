@@ -3,6 +3,7 @@ import React from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import type { ImagingFormState } from "../types";
+import { Clock5, Hospital, Stethoscope } from "lucide-react";
 
 interface Props {
 	form: ImagingFormState;
@@ -23,42 +24,30 @@ export const VerifyStep: React.FC<Props> = ({
 				Verify & Schedule
 			</h2>
 
-			<div className="space-y-4 text-sm text-gray-700">
-				<div>
-					<div className="text-xs font-semibold text-gray-500">Location</div>
-					<div>{form.locationName}</div>
-					<div className="text-xs text-gray-500">{form.locationAddress}</div>
-				</div>
-
-				<div>
-					<div className="text-xs font-semibold text-gray-500">Date & Time</div>
-					<div>
-						{form.appointmentDate} {form.appointmentTime}
-					</div>
-				</div>
-
-				<div>
-					<div className="text-xs font-semibold text-gray-500">Insurance</div>
-					<div>{form.haveInsurance ? "Yes" : "No"}</div>
-					{form.haveInsurance && (
-						<div className="text-xs text-gray-600">
-							{form.insuranceCompany} — {form.memberName} ({form.memberNumber})
-						</div>
-					)}
-				</div>
-
-				<div>
+			<div className="space-y-10 text-md text-gray-700">
+				<div className="flex gap-4 items-center">
+					<Stethoscope className="text-[#0085F2]" size={40} />
 					<div className="text-xs font-semibold text-gray-500">
-						Accident / Liability
+						Appointment Type
+						<div>{form.appointmentType}</div>
 					</div>
-					<div>{form.examRelatedToAccident ? "Yes" : "No"}</div>
+				</div>
+				<div className="flex gap-4 items-center">
+					<Hospital className="text-[#0085F2]" size={40} />
+					<div className="text-xs font-semibold text-gray-500">
+						Location:
+						<div>{form.locationName}</div>
+						<div className="text-xs text-gray-500">{form.locationAddress}</div>
+					</div>
 				</div>
 
-				<div>
+				<div className="flex gap-4 items-center">
+					<Clock5 className="text-[#0085F2]" size={40} />
 					<div className="text-xs font-semibold text-gray-500">
-						Additional notes
+						Date & Time:
+						<div>{form.appointmentDate}</div>
+						<div className="text-xs text-gray-500">{form.appointmentTime}</div>
 					</div>
-					<div>{form.referringProviderAddress}</div>
 				</div>
 			</div>
 
