@@ -59,10 +59,9 @@ export const MessagesView: React.FC = () => {
 		{
 			id: "conv-1",
 			subject:
-				"Your insurance has informed us that they need you to contact them Patricia",
+				"Your insurance has informed us that they need you to contact them",
 			body: `Hello,
-I am contacting you regarding the claim we submitted to your insurance for your visit on 4/28/2025. Your insurance has informed us that they need you to contact them to confirm if you have other insurance. They will not make any payment for any claims that they receive on your behalf, until they hear from you. You can call them at the number that is on your insurance card.
-If you have any questions, you can call the Student Health Billing Office at 813-445-4976 option 7.`,
+I am contacting you regarding the claim we submitted to your insurance for your visit on 4/28/2025....`,
 			date: "Aug 29",
 		},
 	];
@@ -111,6 +110,8 @@ If you have any questions, you can call the Student Health Billing Office at 813
 	const renderCards = () => {
 		switch (activeTab) {
 			case "Conversations":
+				if (appointmentMessages.length === 0)
+					return <p className="text-gray-500">No messages found.</p>;
 				return applySearch(conversationMessages).map((m) => (
 					<div
 						key={m.id}

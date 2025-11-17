@@ -137,3 +137,18 @@
     box-sizing: border-box;
   }
 }
+
+table {
+  border: 2px solid black;
+  /* border around the table */
+  border-collapse: collapse;
+  /* merge borders for cleaner look */
+}
+
+th,
+td {
+  border: 1px solid gray;
+  /* border around each cell */
+  padding: 8px;
+  /* spacing inside cells */
+}

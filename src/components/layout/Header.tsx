@@ -31,7 +31,9 @@ export const Header: React.FC = () => {
 	const userName = user ? `${user?.firstName} ${user?.lastName}` : "Guest";
 	const userEmail = user?.email || "N/A";
 
-	const userInitials = user ? `${user?.firstName[0]}${user?.lastName[0]}` : "G";
+	const userInitials = user
+		? `${user?.firstName[0].toUpperCase()}${user?.lastName[0].toUpperCase()}`
+		: "G";
 
 	// NOTE: If your backend response only provides 'userName' as a single string,
 	// you'll need to adjust the initials logic accordingly.
@@ -56,7 +58,14 @@ export const Header: React.FC = () => {
 					<div className="flex items-center space-x-4">
 						{/* Display first name */}
 						<span className="hidden sm:inline">
-							Hi, {user?.firstName.split(" ")[0]}
+							Hi,{" "}
+							{user?.firstName
+								.split(" ")[0]
+								.split("")
+								.map((char, i) => {
+									if (i == 0) return char.toUpperCase();
+									return char;
+								})}
 						</span>
 
 						<DropdownMenu>

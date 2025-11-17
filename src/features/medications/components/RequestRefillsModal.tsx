@@ -101,7 +101,7 @@ export const RequestRefillsModal = ({
 							<Button
 								disabled={selected.length === 0}
 								onClick={handleSubmit}
-								className="bg-blue-700 text-white"
+								className="bg-[#00529C] hover:bg-[#1E3A8A] text-white"
 							>
 								Submit Request
 							</Button>

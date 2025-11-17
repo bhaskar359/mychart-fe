@@ -54,7 +54,14 @@ export const SuccessModal: React.FC<Props> = ({ open, onClose }) => {
 					<Button variant="outline" onClick={onClose}>
 						Cancel
 					</Button>
-					<Button onClick={() => navigate("/dashboard")}>OK</Button>
+					<Button
+						onClick={() => {
+							navigate("/dashboard");
+							window.location.reload();
+						}}
+					>
+						OK
+					</Button>
 				</div>
 			</div>
 		</div>

@@ -7,10 +7,13 @@ import { RightSidebar } from "./components/RightSidebar";
 import { HomePageButton } from "@/components/layout/HomePageButton";
 import { Button } from "@/components/ui/button";
 import { PaymentModal } from "./components/PaymentModel";
+import { useAppointments } from "@/hooks/useAppointments";
 
 export const BillingSummary: React.FC = () => {
-	const { data, loading, addPayment } = useBilling();
-	const accounts = data?.accounts ?? [];
+	const { data: appointments } = useAppointments();
+
+	const { data: billingData, loading, addPayment } = useBilling();
+	const accounts = billingData?.accounts ?? [];
 	const [showPaymentModal, setShowPaymentModal] = useState(false);
 	const handlePay = async (amount: number, method: string, note?: string) => {
 		addPayment("acct-1", {
@@ -45,47 +48,52 @@ export const BillingSummary: React.FC = () => {
 						</p>
 
 						{/* Main card that matches your screenshot: */}
-						<div className="rounded-2xl p-6 bg-white shadow mb-6">
-							<div className="flex items-center justify-between gap-6">
-								{/* Left icon + provider */}
-								<div className="flex items-center gap-6">
-									<Hospital size={50} />
+						{appointments?.length > 0 ? (
+							<div className="rounded-2xl p-6 bg-white shadow mb-6">
+								<div className="flex items-center justify-between gap-6">
+									{/* Left icon + provider */}
+									<div className="flex items-center gap-6">
+										<Hospital size={50} />
 
-									<div>
-										<div className="font-semibold">
-											Usf Student Health Services
-										</div>
-										<div className="text-sm text-gray-600">
-											Guarantor #4180031 (Yaswanth Bellamkonda)
-										</div>
-										<div className="mt-2 text-sm font-medium">
-											Physician Services • Patients included: You
+										<div>
+											<div className="font-semibold">
+												Usf Student Health Services
+											</div>
+											<div className="text-sm text-gray-600">
+												Guarantor #4180031 (Yaswanth Bellamkonda)
+											</div>
+											<div className="mt-2 text-sm font-medium">
+												Physician Services • Patients included: You
+											</div>
 										</div>
 									</div>
-								</div>
 
-								{/* Amount due in center */}
-								<div className="text-center border-l border-r px-8">
-									<div className="text-sm text-gray-600 mb-1">Amount Due</div>
-									<div className="text-2xl font-bold text-green-700">
-										${totalDue.toFixed(2)}
+									{/* Amount due in center */}
+									<div className="text-center border-l border-r px-8">
+										<div className="text-sm text-gray-600 mb-1">Amount Due</div>
+										<div className="text-2xl font-bold text-green-700">
+											${totalDue.toFixed(2)}
+										</div>
 									</div>
-								</div>
 
-								{/* Actions on the right */}
-								<div className="text-center flex flex-col items-end gap-3">
-									<Button
-										disabled={accounts[0].amountDue <= 0}
-										onClick={() => setShowPaymentModal(true)}
-									>
-										Pay Now
-									</Button>
-									<Link to="/billing/details" className="text-blue-700">
-										Balance Details
-									</Link>
+									{/* Actions on the right */}
+									<div className="text-center flex flex-col items-end gap-3">
+										<Button
+											className="w-full"
+											disabled={accounts[0].amountDue <= 0}
+											onClick={() => setShowPaymentModal(true)}
+										>
+											Pay Now
+										</Button>
+										<Link to="/billing/details" className="text-blue-700">
+											Balance Details
+										</Link>
+									</div>
 								</div>
 							</div>
-						</div>
+						) : (
+							<></>
+						)}
 					</div>
 				</div>
 				<div className="grow lg:w-1/4 bg-[#F4F5F6] pl-10 flex rounded-l-4xl inset-shadow-[0px_4px_25px_3px_rgba(0,0,0,0.25)] p-6">

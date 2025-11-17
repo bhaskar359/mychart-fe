@@ -28,6 +28,8 @@ import { BillingDetailsView } from "@/features/billing/BillingDetailsView";
 // import { MessageActionsProvider } from "./context/MessageActionsContext";
 import { MessageActionsProvider } from "@/context/MessageActionsProvider";
 import { ProfilePage } from "./components/layout/ProfilePage";
+import { DocumentCenterView } from "./components/DocumentCenterView";
+import { DocumentViewer } from "./components/DocumentViewer";
 
 // --- LAZY-LOADED VIEWS (Optimization) ---
 
@@ -225,6 +227,23 @@ const App: React.FC = () => {
 								element={
 									<Suspense fallback={<SkeletonPage type="visits" />}>
 										<VisitDetailsView />
+									</Suspense>
+								}
+							/>
+							<Route
+								path="document-center"
+								element={
+									<Suspense fallback={<SkeletonPage type="appointments" />}>
+										<DocumentCenterView />
+									</Suspense>
+								}
+							/>
+
+							<Route
+								path="document/:id"
+								element={
+									<Suspense fallback={<SkeletonPage type="appointments" />}>
+										<DocumentViewer />
 									</Suspense>
 								}
 							/>

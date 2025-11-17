@@ -167,7 +167,7 @@ export const VisitsView: React.FC = () => {
 					<ul className="space-y-3 text-sm text-[#00529C] ">
 						<li>
 							<Link
-								to="/visit-details/0d1e2f3a-pst2-3f2a-a3b4-8c5678901234?tab=notes"
+								to="/document-center"
 								className="hover:underline flex cursor-pointer"
 							>
 								<BookText size={18} className="pr-1" />

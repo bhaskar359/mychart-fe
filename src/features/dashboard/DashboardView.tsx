@@ -108,7 +108,7 @@ export const DashboardView: React.FC = () => {
 					Your health information at a glance.
 				</p>
 
-				<div className="flex flex-wrap justify-center gap-2">
+				<div className="flex flex-wrap justify-center gap-2 gap-y-10">
 					{dashboardLinks.map((link, index) => (
 						<div
 							key={index}
