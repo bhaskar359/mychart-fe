@@ -64,7 +64,7 @@ export const TimeStep: React.FC<Props> = ({
 						</button>
 					</PopoverTrigger>
 
-					<PopoverContent className="p-0">
+					<PopoverContent className="p-0 w-full">
 						<Calendar
 							mode="single"
 							selected={selectedDate}

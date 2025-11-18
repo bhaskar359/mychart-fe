@@ -89,19 +89,21 @@ export const DocumentsView: React.FC<Props> = ({ account }) => {
 						{/* Payment Table */}
 						<div className="section">
 							<h3 className="font-semibold text-gray-800">Payment Details</h3>
-							<table>
-								<thead>
+							<table className="table">
+								<thead className="th">
 									<tr>
-										<th>Date</th>
-										<th>Amount Paid</th>
-										<th>Payment Method</th>
+										<th className="td">Date</th>
+										<th className="td">Amount Paid</th>
+										<th className="td">Payment Method</th>
 									</tr>
 								</thead>
 								<tbody>
 									<tr>
-										<td>{new Date(latestPayment.date).toLocaleDateString()}</td>
-										<td>${latestPayment.amount.toFixed(2)}</td>
-										<td>
+										<td className="td">
+											{new Date(latestPayment.date).toLocaleDateString()}
+										</td>
+										<td className="td">${latestPayment.amount.toFixed(2)}</td>
+										<td className="td">
 											Card ending in{" "}
 											<strong>
 												{latestPayment.method.cardNumber.slice(-4)}

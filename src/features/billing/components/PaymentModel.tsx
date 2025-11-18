@@ -70,9 +70,9 @@ export const PaymentModal: React.FC<Props> = ({ account, onClose, onPay }) => {
 		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
 			<div className="bg-white rounded-lg max-w-lg w-full shadow-lg overflow-hidden">
 				{/* HEADER */}
-				<div className="flex items-center justify-between p-4 border-b">
+				<div className="flex items-center bg-[#32539e] text-white justify-between p-4 border-b">
 					<div className="flex items-center gap-2">
-						<CreditCard className="w-5 h-5 text-blue-700" />
+						<CreditCard className="w-5 h-5" />
 						<h3 className="text-lg font-semibold">Make a Payment</h3>
 					</div>
 					<button onClick={onClose}>
@@ -87,7 +87,7 @@ export const PaymentModal: React.FC<Props> = ({ account, onClose, onPay }) => {
 					</p>
 
 					{/* AMOUNT */}
-					<div>
+					<div className="flex flex-col gap-1">
 						<Label>Amount (USD)</Label>
 						<Input
 							type="number"
@@ -99,7 +99,7 @@ export const PaymentModal: React.FC<Props> = ({ account, onClose, onPay }) => {
 					</div>
 
 					{/* CARD NUMBER */}
-					<div>
+					<div className="flex flex-col gap-1">
 						<Label>Card Number</Label>
 						<div className="relative">
 							<Input
@@ -118,7 +118,7 @@ export const PaymentModal: React.FC<Props> = ({ account, onClose, onPay }) => {
 					{/* EXPIRY + CVV ROW */}
 					<div className="flex gap-4">
 						{/* EXPIRY */}
-						<div className="w-1/2">
+						<div className="w-1/2 flex flex-col gap-1">
 							<Label>Expiry (MM/YY)</Label>
 							<div className="relative">
 								<Input
@@ -142,7 +142,7 @@ export const PaymentModal: React.FC<Props> = ({ account, onClose, onPay }) => {
 						</div>
 
 						{/* CVV */}
-						<div className="w-1/2">
+						<div className="w-1/2 flex flex-col gap-1">
 							<Label>CVV</Label>
 							<div className="relative">
 								<Input
